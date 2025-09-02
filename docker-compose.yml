@@ -28,7 +28,7 @@ services:
       - menyalo-network
 
   postgres:
-    image: pgvector/pgvector:pg16
+    image: postgres:16.9-alpine
     container_name: menyalo_postgres
     env_file:
       - .env.docker

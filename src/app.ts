@@ -28,7 +28,6 @@ export const createServer = (): Express => {
   app.use(morgan('development'));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-
   app.use(cors(corsOptions));
   app.use(helmet());
 
@@ -36,7 +35,6 @@ export const createServer = (): Express => {
   app.set('view engine', 'ejs');
 
   app.use(sessionMiddleware);
-
   app.use(passport.initialize());
   app.use(passport.session());
 
