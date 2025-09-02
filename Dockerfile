@@ -1,5 +1,5 @@
 # 1. Use Node.js official image
-FROM node:22.17.0-alpine
+FROM node:slim
 
 # 2. Set working directory inside the container
 WORKDIR /usr/src/app
@@ -16,11 +16,11 @@ RUN npm install typescript
 COPY . .
 
 # 6. Set environment variable
-ENV NODE_ENV=DEV
-ENV PORT=5001
+ENV NODE_ENV=development
+ENV PORT=5000
 
-# 6. Expose the port (must match PORT in .env)
-EXPOSE 5001
+# 7. Expose the port (must match PORT in .env)
+EXPOSE 5000
 
-# 7. Start the app using your dev script
+# 8. Start the app using your dev script
 CMD ["npm", "run", "dev"]

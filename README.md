@@ -1,3 +1,6 @@
+[![Maintainability](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend/maintainability.svg)](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend)
+[![Code Coverage](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend/coverage.svg)](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend)
+
 # MenyaLo Backend
 
 ## Description
@@ -11,6 +14,7 @@ This backend service powers MenyaLo’s RESTful APIs for user authentication, la
 ## Features
 
 ### Citizen/User Capabilities
+
 - Can register and login
 - Has a personalized feed based on domain preferences
 - Can browse, search, and sort the Rwanda Law Gazette (by origin, status, domain)
@@ -20,6 +24,7 @@ This backend service powers MenyaLo’s RESTful APIs for user authentication, la
 - Can post, comment, reply, upvote, and report in the community
 
 ### Organization Capabilities (e.g. startups, schools, NGOs)
+
 - Can register and be verified
 - Can login and manage their profile
 - Can browse, search, and sort laws and firms
@@ -29,6 +34,7 @@ This backend service powers MenyaLo’s RESTful APIs for user authentication, la
 - Has a personalized feed based on sector and domain preferences
 
 ### Law Firm Capabilities
+
 - Can register and be verified by an admin
 - Can login and manage their profile and specialties
 - Can browse, search, and sort laws and firms
@@ -41,6 +47,7 @@ This backend service powers MenyaLo’s RESTful APIs for user authentication, la
 - Can be recommended to organizations and citizens
 
 ### Admin Capabilities
+
 - Can verify or reject law firm and organization registrations
 - Can moderate reported posts and deactivate abusive accounts
 - Can manage law ingestion and AI summary generation
@@ -56,7 +63,7 @@ This backend service powers MenyaLo’s RESTful APIs for user authentication, la
 - **Testing**: Jest
 - **Containerization**: Docker, Docker Compose
 - **AI Integration**: RAG LLM using Rwanda Law Gazette as external source
-- **Authentication**: JWT, session-based, and OAuth2 hybrid strategies
+- **Authentication**: JWT, and OAuth2 hybrid strategies
 - **Environment Management**: Joi-based config validation
 
 ---
@@ -68,7 +75,7 @@ To get started with the MenyaLo backend, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/menyalo-backend.git
+   git clone https://github.com/Solvit-Africa-Training-Center/MenyaLo-Backend.git
    ```
 
 2. Navigate to the project directory:
@@ -85,24 +92,34 @@ To get started with the MenyaLo backend, follow these steps:
 
 4. Set up environment variables:
 
-   Copy the `.env.example` file to `.env` and update the values as needed.
+   Copy the `.env.example` file to `.env` and `.env.docker.example` file to `.env.docker`, and then update the values as needed.
 
 5. Start the development server:
 
    ```bash
    npm run dev
    ```
+
 6. Run docker:
-   ** Run docker detached**
+
+   -Run docker detached
+
    ```bash
    npm run docker:up
    ```
-   ** Run docker in the foreground**
+
+   -Run docker in the foreground
+
    ```bash
    docker-compose up
    ```
+
 7. Run tests:
 
    ```bash
    npm run test
    ```
+
+## API Documentation
+
+API documentation is available at [MenyaLo API Docs](http://localhost:5001/docs/).
