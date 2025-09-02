@@ -9,7 +9,7 @@ Database.database
   .authenticate()
   .then(async () => {
     try {
-      server.listen(port, '0.0.0.0',() => {
+      server.listen(port, '0.0.0.0', () => {
         logStartup(port, process.env.NODE_ENV || 'DEV');
       });
     } catch (error) {

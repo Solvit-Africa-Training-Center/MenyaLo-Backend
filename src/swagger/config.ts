@@ -1,0 +1,41 @@
+import swaggerJsdoc from 'swagger-jsdoc';
+import { SwaggerDefinition } from 'swagger-jsdoc';
+
+const swaggerDefinition: SwaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'MenyaLo API',
+    version: '1.0.0',
+    description: 'API documentation for Menyalo application',
+    contact: {
+      name: 'Development Team 12',
+      email: 'dev@menyalo.com',
+    },
+  },
+  servers: [
+    {
+      url: 'http://localhost:5001/api/v1',
+      description: 'Development server',
+    },
+    {
+      url: 'http://localhost:5001/api/v1',
+      description: 'Docker development server',
+    },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+    },
+  },
+};
+
+const options = {
+  definition: swaggerDefinition,
+  apis: ['./src/swagger/paths/*.yaml', './src/swagger/schemas/*.yaml'],
+};
+
+export const swaggerSpec = swaggerJsdoc(options);

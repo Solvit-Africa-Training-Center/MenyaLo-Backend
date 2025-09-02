@@ -18,7 +18,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    command: > 
+    command: >
       sh -c "
       npm run db:migrate && 
       npm run db:seed && 

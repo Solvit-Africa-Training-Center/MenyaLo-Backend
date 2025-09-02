@@ -28,7 +28,7 @@ Object.values(models).forEach((model) => {
   }
 });
 
-export const Database = { 
-    ...models, 
-    database: sequelizeInstance, 
+export const Database = {
+  ...models,
+  database: sequelizeInstance,
 };

@@ -3,9 +3,9 @@ import { ResponseService } from '../utils/response';
 import { Role } from '../database/models/Role';
 import { IRequestUser } from './authMiddleware';
 
-
 export const checkRole =
-  (roles: string[]) => async (req: IRequestUser, res: Response, next: NextFunction): Promise<unknown> => {
+  (roles: string[]) =>
+  async (req: IRequestUser, res: Response, next: NextFunction): Promise<unknown> => {
     try {
       if (!req.user || !req.user.role) {
         return ResponseService({
@@ -39,7 +39,6 @@ export const checkRole =
       }
 
       next();
-      
     } catch (error) {
       const { message } = error as Error;
       return ResponseService({

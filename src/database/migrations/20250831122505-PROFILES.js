@@ -20,28 +20,28 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       userRole: {
-        type: Sequelize.ENUM('User','Firm','Organization'),
+        type: Sequelize.ENUM('User', 'Firm', 'Organization'),
         allowNull: false,
       },
       name: {
         type: Sequelize.STRING,
-        allowNull:false
+        allowNull: false,
       },
       bio: {
         type: Sequelize.TEXT,
-        allowNull:true,
+        allowNull: true,
       },
       avatarUrl: {
         type: Sequelize.STRING,
-        allowNull:true,
+        allowNull: true,
       },
       logoUrl: {
         type: Sequelize.STRING,
-        allowNull:true,
+        allowNull: true,
       },
       organisationType: {
-        type: Sequelize.ENUM('ForProfit','NonProfit','Governmental'),
-        allowNull:false,
+        type: Sequelize.ENUM('ForProfit', 'NonProfit', 'Governmental'),
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -62,5 +62,5 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('profiles');
-  }
+  },
 };
