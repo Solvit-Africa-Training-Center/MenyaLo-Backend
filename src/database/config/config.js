@@ -70,4 +70,3 @@ if (env === 'development') {
 }
 
 module.exports = databaseConfig;
-
