@@ -4,13 +4,13 @@ import { ResponseService } from '../utils/response';
 import { errorLogger } from '../utils/logger';
 
 interface ValidateOption<T> {
-  type: 'body' | 'headers' | 'params';
+  type: 'body' | 'headers' | 'params' | 'query';
   schema: ObjectSchema<T>;
 }
 
 export const ValidationMiddleware =
   <T>({ type, schema }: ValidateOption<T>) =>
-  (req: Request, res: Response, next: NextFunction) => {
+  (req: Request, res: Response, next: NextFunction): unknown => {
     try {
       const validationQueries = req[type];
       const { error } = (schema as ObjectSchema<T>).validate(validationQueries);
@@ -25,7 +25,7 @@ export const ValidationMiddleware =
       }
       next();
     } catch (error) {
-      errorLogger(error as Error,'Validation error');
+      errorLogger(error as Error, 'Validation error');
       return ResponseService({
         data: error,
         status: 500,

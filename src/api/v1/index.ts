@@ -1,12 +1,42 @@
 import express, { Router } from 'express';
-import authRoutes from './auth/local/routes';
+import roleRoutes from './roles/routes';
+import authRoutes from './auth/routes';
 import userRoutes from './users/routes';
-import healthRoutes from './health/routes';
+import subscriptionRoutes from './subscribers/routes';
+import postRoutes from './posts/routes';
+import commentRoutes from './comments/routes';
+import chatBotRoutes from './chatbot/routes';
+import ratingRoutes from './ratings/routes';
+import profileRoutes from './profiles/routes';
+import replyRoutes from './replies/routes';
+import upvoteRoutes from './upvotes/routes';
+import domainRoutes from './domains/routes';
+import originRoutes from './origins/routes';
+import specialtyRoutes from './specialties/routes';
+import preferenceRoutes from './domainPreferences/routes';
+import lawRoutes from './laws/routes';
+import articleRoutes from './articles/routes';
+import referenceRoutes from './references/routes';
 
 const router: Router = express.Router();
 
-router.use('/users', userRoutes);
+router.use('/roles', roleRoutes);
 router.use('/auth', authRoutes);
-router.use('/health', healthRoutes);
+router.use('/users', userRoutes);
+router.use('/profiles', profileRoutes);
+router.use('/ratings', ratingRoutes);
+router.use('/subscribers', subscriptionRoutes);
+router.use('/posts', postRoutes);
+router.use('/posts', commentRoutes);
+router.use('/posts', replyRoutes);
+router.use('/posts', upvoteRoutes);
+router.use('/domains', domainRoutes);
+router.use('/origins', originRoutes);
+router.use('/specialties', specialtyRoutes);
+router.use('/preferences', preferenceRoutes);
+router.use('/laws', lawRoutes);
+router.use('/laws', articleRoutes);
+router.use('/documents', chatBotRoutes);
+router.use('/references', referenceRoutes);
 
 export default router;

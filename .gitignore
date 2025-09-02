@@ -6,3 +6,7 @@ dist/
 package-lock.json
 coverage/
 logs/
+__test__
+uploads/
+.history
+src/api/v1/database/migrations/disabled/

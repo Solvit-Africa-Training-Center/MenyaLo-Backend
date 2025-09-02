@@ -4,21 +4,21 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        ENV: DEV
+        ENV: development
     container_name: menyalo
     env_file:
       - .env.docker
     ports:
-      - '5001:5001'
+      - '5001:5000'
     volumes:
       - ./:/usr/src/app/
-      - node_modules:/app/node_modules
+      - node_modules:/usr/src/app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_started
-    command: > 
+    command: >
       sh -c "
       npm run db:migrate && 
       npm run db:seed && 
@@ -28,7 +28,7 @@ services:
       - menyalo-network
 
   postgres:
-    image: postgres:16.9-alpine
+    image: pgvector/pgvector:pg16
     container_name: menyalo_postgres
     env_file:
       - .env.docker
@@ -64,7 +64,7 @@ services:
       - menyalo-network
 
   pgadmin:
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4:9.9
     container_name: menyalo_pgadmin
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admi.com

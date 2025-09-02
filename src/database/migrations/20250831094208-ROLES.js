@@ -12,7 +12,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique:true
+        unique: true,
       },
       permissions: {
         type: Sequelize.ARRAY(Sequelize.STRING),
