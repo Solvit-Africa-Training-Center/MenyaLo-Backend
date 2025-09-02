@@ -6,11 +6,12 @@ export interface FileValidationOptions {
   maxFiles?: number;
   minFiles?: number;
   allowedMimeTypes?: string[];
-  maxFileSize?: number; // in bytes
+  maxFileSize?: number;
 }
 
 export const fileValidationMiddleware =
-  (options: FileValidationOptions) => (req: Request, res: Response, next: NextFunction): unknown=> {
+  (options: FileValidationOptions) =>
+  (req: Request, res: Response, next: NextFunction): unknown => {
     try {
       const files = req.files as Express.Multer.File[];
 
@@ -107,4 +108,12 @@ export const profileImageValidation = fileValidationMiddleware({
   maxFiles: 1,
   allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
   maxFileSize: 2 * 1024 * 1024, // 2MB
+});
+
+export const documentValidation = fileValidationMiddleware({
+  fieldName: 'documents',
+  minFiles: 1,
+  maxFiles: 1,
+  allowedMimeTypes: ['application/pdf', 'application/msword'],
+  maxFileSize: 100 * 1024 * 1024, // 10MB
 });

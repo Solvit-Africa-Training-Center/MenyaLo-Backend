@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        ENV: DEV
+        ENV: development
     container_name: menyalo
     env_file:
       - .env.docker
@@ -18,7 +18,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    command: > 
+    command: >
       sh -c "
       npm run db:migrate && 
       npm run db:seed && 
@@ -28,7 +28,15 @@ services:
       - menyalo-network
 
   postgres:
+<<<<<<< HEAD
+<<<<<<< HEAD
+    image: pgvector/pgvector:pg16
+=======
     image: postgres:16.9-alpine
+>>>>>>> 833906b (Initial MenyaLo backend setup:)
+=======
+    image: pgvector/pgvector:pg16
+>>>>>>> fbcfc4f (Chatbot integration and enhancements:)
     container_name: menyalo_postgres
     env_file:
       - .env.docker
@@ -64,7 +72,7 @@ services:
       - menyalo-network
 
   pgadmin:
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4:9.8
     container_name: menyalo_pgadmin
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admi.com
@@ -88,4 +96,12 @@ volumes:
 
 networks:
   menyalo-network:
+<<<<<<< HEAD
+<<<<<<< HEAD
     driver: bridge
+=======
+    driver: bridge
+>>>>>>> 833906b (Initial MenyaLo backend setup:)
+=======
+    driver: bridge
+>>>>>>> fbcfc4f (Chatbot integration and enhancements:)
