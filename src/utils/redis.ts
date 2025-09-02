@@ -1,28 +1,22 @@
 import { createClient } from 'redis';
-import { config } from 'dotenv';
 import { logger } from './logger';
-
+import { config } from 'dotenv';
 config();
 
-const host = process.env.REDIS_HOST || 'localhost';
-const portStr = process.env.REDIS_PORT || '6379';
-const password = process.env.REDIS_PASSWORD || '';
-const dbStr = process.env.REDIS_DB || '0';
+const host = process.env.REDIS_HOST;
+const port = parseInt(process.env.REDIS_PORT as string);
+const database = process.env.REDIS_DB as string;
 
-const port = Number.isNaN(parseInt(portStr)) ? 6379 : parseInt(portStr);
-const database = Number.isNaN(parseInt(dbStr)) ? 0 : parseInt(dbStr);
-
-// Log the Redis configuration (without sensitive info)
-logger.info(`Redis configuration: ${host}:${port}, DB:${database}`);
-
-export const redis = createClient({
+const redis = createClient({
+  username: process.env.REDIS_USERNAME,
+  password: process.env.REDIS_PASSWORD,
   socket: {
-    host,
-    port,
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT as string),
   },
-  password: password || undefined, // Only include password if it's not empty
-  database,
 });
+
+logger.info(`Redis configuration: ${host}:${port}, DB:${database}`);
 
 redis.on('connect', () => {
   logger.info('Connected to Redis');
