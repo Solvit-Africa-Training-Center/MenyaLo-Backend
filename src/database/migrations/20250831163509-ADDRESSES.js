@@ -11,39 +11,39 @@ module.exports = {
       },
       country: {
         type: Sequelize.STRING,
-        defaultValue:'Rwanda',
-        allowNull:false
+        defaultValue: 'Rwanda',
+        allowNull: false,
       },
       province: {
         type: Sequelize.STRING,
-        allowNull:false,
+        allowNull: false,
       },
       city: {
         type: Sequelize.STRING,
-        allowNull:false,
+        allowNull: false,
       },
       district: {
         type: Sequelize.STRING,
-        allowNull:false,
+        allowNull: false,
       },
       sector: {
         type: Sequelize.STRING,
-        allowNull:false,
+        allowNull: false,
       },
       street: {
         type: Sequelize.STRING,
-        allowNull:true,
+        allowNull: true,
       },
       latitude: {
         type: Sequelize.FLOAT,
-        allowNull:true,
+        allowNull: true,
       },
       longitude: {
         type: Sequelize.FLOAT,
-        allowNull:true,
+        allowNull: true,
       },
       profileId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -64,5 +64,5 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('addresses');
-  }
+  },
 };

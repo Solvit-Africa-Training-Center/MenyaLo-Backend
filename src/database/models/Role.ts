@@ -1,6 +1,5 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import { User } from './User';
-import { STRING } from 'sequelize';
 
 export interface RoleAttributes {
   id: string;

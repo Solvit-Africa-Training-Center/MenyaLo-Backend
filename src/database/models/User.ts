@@ -31,12 +31,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public createdAt: Date = new Date();
   public updatedAt!: Date;
   public deletedAt: null = null;
-  
 
-  static associate(models: {
-    Role: typeof Role;
-    Profile: typeof Profile;
-  }): void {
+  static associate(models: { Role: typeof Role; Profile: typeof Profile }): void {
     User.belongsTo(models.Role, {
       foreignKey: 'roleId',
       as: 'role',
@@ -51,13 +47,13 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public toJSON(): object | UserAttributes {
     return {
       ...this.get(),
-      password:undefined,
-      deletedAt:undefined,
+      password: undefined,
+      deletedAt: undefined,
     };
   }
 }
 
-export const UserModel = (sequelize: Sequelize):typeof User => {
+export const UserModel = (sequelize: Sequelize): typeof User => {
   User.init(
     {
       id: {
@@ -94,7 +90,7 @@ export const UserModel = (sequelize: Sequelize):typeof User => {
       timestamps: true,
       modelName: 'User',
       tableName: 'users',
-      paranoid:true,
+      paranoid: true,
     },
   );
   return User;

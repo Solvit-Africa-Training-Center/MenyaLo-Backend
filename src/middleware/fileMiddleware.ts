@@ -10,7 +10,8 @@ export interface FileValidationOptions {
 }
 
 export const fileValidationMiddleware =
-  (options: FileValidationOptions) => (req: Request, res: Response, next: NextFunction): unknown=> {
+  (options: FileValidationOptions) =>
+  (req: Request, res: Response, next: NextFunction): unknown => {
     try {
       const files = req.files as Express.Multer.File[];
 

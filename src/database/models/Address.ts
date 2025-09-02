@@ -3,15 +3,15 @@ import { Profile } from './Profile';
 
 interface AddressAttributes {
   id: string;
-  country: string;         
-  province: string;           
-  city: string;       
-  district: string;      
+  country: string;
+  province: string;
+  city: string;
+  district: string;
   sector: string;
   street?: string;
-  profileId:string;        
-  latitude?: number;     
-  longitude?: number
+  profileId: string;
+  latitude?: number;
+  longitude?: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: null;
@@ -30,14 +30,14 @@ export class Address
   implements AddressAttributes
 {
   public id!: string;
-  public country!: string;         
-  public province!: string;           
-  public city!: string;       
-  public district!: string;      
+  public country!: string;
+  public province!: string;
+  public city!: string;
+  public district!: string;
   public sector!: string;
   public street!: string;
-  public profileId!: string;        
-  public latitude?: number;     
+  public profileId!: string;
+  public latitude?: number;
   public longitude?: number;
   public updatedAt!: Date;
   public createdAt: Date = new Date();
@@ -53,54 +53,55 @@ export class Address
   public toJSON(): object | AddressAttributes {
     return {
       ...this.get(),
-      updatedAt:undefined,
-      createdAt:undefined,
-      deletedAt:undefined,
+      updatedAt: undefined,
+      createdAt: undefined,
+      deletedAt: undefined,
     };
   }
 }
 
-export const AddressModel = (sequelize: Sequelize):typeof Address => {
-  Address.init({
-    id: {
-      type:DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    country: {
-      type: DataTypes.STRING,
-      defaultValue: 'Rwanda',
-      allowNull: false,
-    },
-    province: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    city: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    district: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    sector: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    street: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    latitude: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
-    longitude:  {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
-    profileId: {
+export const AddressModel = (sequelize: Sequelize): typeof Address => {
+  Address.init(
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
+      country: {
+        type: DataTypes.STRING,
+        defaultValue: 'Rwanda',
+        allowNull: false,
+      },
+      province: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      city: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      district: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sector: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      street: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      latitude: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      longitude: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      profileId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -109,10 +110,12 @@ export const AddressModel = (sequelize: Sequelize):typeof Address => {
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
+      },
     },
-  }, {
-    sequelize,
-    modelName: 'Address',
-  });
+    {
+      sequelize,
+      modelName: 'Address',
+    },
+  );
   return Address;
 };

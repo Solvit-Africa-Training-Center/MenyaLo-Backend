@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { ResponseService } from '../utils/response';
 import { verifyToken } from '../utils/helper';
 
-
 interface JwtPayload {
   id?: string;
   email?: string;
@@ -18,7 +17,11 @@ export interface IRequestUser extends Request {
 }
 
 // Authentication middleware
-export const authMiddleware = async (req: IRequestUser, res: Response, next: NextFunction): Promise<unknown> => {
+export const authMiddleware = async (
+  req: IRequestUser,
+  res: Response,
+  next: NextFunction,
+): Promise<unknown> => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -46,7 +49,6 @@ export const authMiddleware = async (req: IRequestUser, res: Response, next: Nex
     req.token = token;
 
     next();
-    
   } catch (error) {
     const { message, stack } = error as Error;
     return ResponseService({

@@ -40,7 +40,7 @@ export class Profile
   public createdAt: Date = new Date();
   public deletedAt: null = null;
 
-  static associate(models: { User: typeof User, Address: typeof Address }): void {
+  static associate(models: { User: typeof User; Address: typeof Address }): void {
     Profile.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user',
@@ -48,28 +48,29 @@ export class Profile
 
     Profile.hasMany(models.Address, {
       foreignKey: 'profileId',
-      as:'addresses',
+      as: 'addresses',
     });
   }
 
   public toJSON(): object | ProfileAttributes {
     return {
       ...this.get(),
-      updatedAt:undefined,
-      createdAt:undefined,
-      deletedAt:undefined,
+      updatedAt: undefined,
+      createdAt: undefined,
+      deletedAt: undefined,
     };
   }
 }
 
-export const ProfileModel = (sequelize: Sequelize):typeof Profile => {
-  Profile.init({
-    id: {
-      type:DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    userId: {
+export const ProfileModel = (sequelize: Sequelize): typeof Profile => {
+  Profile.init(
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
+      userId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -78,37 +79,39 @@ export const ProfileModel = (sequelize: Sequelize):typeof Profile => {
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
+      },
+      userRole: {
+        type: DataTypes.ENUM('User', 'Firm', 'Organization'),
+        allowNull: false,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      bio: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      avatarUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      logoUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      organisationType: {
+        type: DataTypes.ENUM('ForProfit', 'NonProfit', 'Governmental'),
+        allowNull: false,
+      },
     },
-    userRole:{
-      type:DataTypes.ENUM('User','Firm','Organization'),
-      allowNull: false,
+    {
+      sequelize,
+      modelName: 'Profile',
+      tableName: 'profiles',
+      timestamps: true,
+      paranoid: true,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    bio: {
-      type:DataTypes.TEXT,
-      allowNull:true,
-    },
-    avatarUrl: {
-      type:DataTypes.STRING,
-      allowNull:true,
-    }, 
-    logoUrl: {
-      type: DataTypes.STRING,
-      allowNull:true,
-    },
-    organisationType:{
-      type: DataTypes.ENUM('ForProfit','NonProfit','Governmental'),
-      allowNull:false,
-    },
-  }, {
-    sequelize,
-    modelName: 'Profile',
-    tableName: 'profiles',
-    timestamps: true,
-    paranoid:true,
-  });
+  );
   return Profile;
 };

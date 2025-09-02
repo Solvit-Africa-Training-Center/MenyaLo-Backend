@@ -59,7 +59,11 @@ export const uploadFile = (
 export const uploadProfileFile = (file: Express.Multer.File): Promise<string> =>
   uploadFile(file, 'manyalo-images');
 
-const multerFilterFile = (req: Request, file: Express.Multer.File, cb: FileFilterCallback):void => {
+const multerFilterFile = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback,
+): void => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {

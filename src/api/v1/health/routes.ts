@@ -6,5 +6,4 @@ const controller = new Health();
 
 healthRoutes.get('/check', controller.check);
 
-
 export default healthRoutes;
