@@ -1,5 +1,5 @@
 # 1. Use Node.js official image
-FROM node:22.17.0-alpine
+FROM node:slim
 
 # 2. Set working directory inside the container
 WORKDIR /usr/src/app
@@ -8,19 +8,22 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # 4. Install dependencies
-RUN npm install
-RUN npm install typescript
+RUN npm install 
+RUN npm install pm2 -g
+
 # RUN npx sequelize-cli db:create
 
 # 5. Copy the rest of your project files
 COPY . .
 
-# 6. Set environment variable
-ENV NODE_ENV=DEV
-ENV PORT=5001
+# 6. Compile typescript
+RUN npm run build
 
-# 6. Expose the port (must match PORT in .env)
-EXPOSE 5001
+# 7. Copy views into dist
+RUN cp -r views dist/views
 
-# 7. Start the app using your dev script
-CMD ["npm", "run", "dev"]
+# 8. Expose the port (must match PORT in .env)
+EXPOSE 5000
+
+# 9. Start the app using your dev script
+CMD ["pm2-runtime", "ecosystem.config.js"]
