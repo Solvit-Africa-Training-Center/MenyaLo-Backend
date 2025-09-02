@@ -1,4 +1,5 @@
 'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -12,6 +13,7 @@ module.exports = {
       userId: {
         type: Sequelize.UUID,
         allowNull: false,
+        unique: true,
         references: {
           model: 'users',
           key: 'id',
@@ -20,28 +22,57 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       userRole: {
-        type: Sequelize.ENUM('User','Firm','Organization'),
+        type: Sequelize.ENUM('citizen', 'organization', 'law-firm'),
         allowNull: false,
       },
       name: {
         type: Sequelize.STRING,
-        allowNull:false
+        allowNull: false,
       },
       bio: {
         type: Sequelize.TEXT,
-        allowNull:true,
+        allowNull: true,
       },
-      avatarUrl: {
+      occupation: {
         type: Sequelize.STRING,
-        allowNull:true,
+        allowNull: true,
       },
-      logoUrl: {
+      imageUrl: {
         type: Sequelize.STRING,
-        allowNull:true,
+        allowNull: true,
       },
-      organisationType: {
-        type: Sequelize.ENUM('ForProfit','NonProfit','Governmental'),
-        allowNull:false,
+      website: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      phoneNumber: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      socials: {
+        type: Sequelize.JSONB,
+        allowNull: true,
+        defaultValue: {},
+      },
+      teamSize: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      yearsOfExperience: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      caseResolved: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      successRate: {
+        type: Sequelize.DECIMAL(5, 2),
+        allowNull: true,
+      },
+      establishedAt: {
+        type: Sequelize.DATE,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -59,8 +90,13 @@ module.exports = {
         defaultValue: null,
       },
     });
+
+    // Add index for faster queries
+    await queryInterface.addIndex('profiles', ['userId']);
+    await queryInterface.addIndex('profiles', ['userRole']);
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('profiles');
-  }
+  },
 };
