@@ -3,6 +3,7 @@ import { Database } from '../../../database';
 import { ResponseService } from '../../../utils/response';
 import { uploadFile } from '../../../utils/upload';
 import { CreateProfileInterface, GetAllProfiles, ProfileInterface, UpdateProfileInterface } from './profiles';
+import { errorLogger } from '../../../utils/logger';
 
 export class ProfileService {
   data: ProfileInterface | CreateProfileInterface | UpdateProfileInterface;
@@ -54,6 +55,7 @@ export class ProfileService {
       });
       return user?.name || null;
     } catch (error) {
+      errorLogger(error as Error, 'User exists error');
       return null;
     }
   }

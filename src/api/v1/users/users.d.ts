@@ -27,6 +27,8 @@ type UpdateCitizenInterface = Partial<CreateCitizenInterface>;
 type UpdateOrganizationInterface = Partial<CreateOrganizationInterface>;
 type UpdateUserInterface = Partial<Omit<UserInterface, 'id' | 'createdAt' | 'password'>>;
 
+type UpdateCitizenInterface = Partial<CreateCitizenInterface>;
+type UpdateOrganizationInterface = Partial<CreateOrganizationfaceInterface>;
 interface GetAllUsers {
   users: UserInterface[];
 }

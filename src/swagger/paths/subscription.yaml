@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /subscribers:
   get:
     summary: Get all subscribers
@@ -17,6 +18,9 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
+=======
+/subscribe:
+>>>>>>> a0deaba (Initial MenyaLo backend setup:)
   post:
     summary: Subscribe to newsletter
     description: Allows a user to subscribe using their email address.
@@ -26,9 +30,12 @@
       content:
         application/json:
           schema:
+<<<<<<< HEAD
             type: object
             required:
               - email
+=======
+>>>>>>> a0deaba (Initial MenyaLo backend setup:)
             $ref: '#/components/schemas/Subscribe'
     responses:
       200:
@@ -48,7 +55,11 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
+<<<<<<< HEAD
 /subscribers/unsubscribe:
+=======
+/unsubscribe:
+>>>>>>> a0deaba (Initial MenyaLo backend setup:)
   get:
     summary: Unsubscribe from newsletter
     description: Unsubscribes a user using a secure token sent via email.
@@ -71,3 +82,25 @@
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
+<<<<<<< HEAD
+=======
+
+/subscribers:
+  get:
+    summary: Get all subscribers
+    description: Retrieves a list of all newsletter subscribers (admin only).
+    tags: [Subscription]
+    security:
+      - bearerAuth: []
+    responses:
+      200:
+        description: List of subscribers retrieved successfully
+      401:
+        description: Unauthorized
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+>>>>>>> a0deaba (Initial MenyaLo backend setup:)

@@ -14,7 +14,19 @@ README.md
 *.log
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
 .history
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+.history
+=======
+>>>>>>> 833906b (Initial MenyaLo backend setup:)
+=======
+.history
+>>>>>>> fbcfc4f (Chatbot integration and enhancements:)
+
+>>>>>>> a0deaba (Initial MenyaLo backend setup:)
 # Test files
 **/*.test.ts
 **/*.spec.ts

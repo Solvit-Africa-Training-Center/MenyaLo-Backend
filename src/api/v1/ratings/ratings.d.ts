@@ -33,6 +33,17 @@ interface UpdateRatingRequestInterface extends IRequestUser {
   };
 }
 
+interface RatingStats {
+  averageRating: number;
+  totalRatings: number;
+  fiveStars: number;
+  fourStars: number;
+  threeStars: number;
+  twoStars: number;
+  oneStar: number;
+}
+
+
 export {
   RatingInterface,
   CreateRatingInterface,
@@ -40,4 +51,5 @@ export {
   GetAllRatings,
   RatingRequestInterface,
   UpdateRatingRequestInterface,
+  RatingStats,
 };

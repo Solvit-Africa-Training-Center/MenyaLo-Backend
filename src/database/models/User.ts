@@ -5,6 +5,7 @@ import { Rating } from './Rating';
 import { Post } from './Post';
 import { Comment } from './Comment';
 
+
 interface UserAttributes {
   id: string;
   username?: string;
@@ -62,6 +63,19 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     User.hasOne(models.Profile, {
       foreignKey: 'userId',
       as: 'profile',
+    });
+    User.hasMany(Rating, {
+      foreignKey: 'userId',
+      as: 'ratings',
+    });
+
+    User.hasMany(Post, {
+      foreignKey: 'authorId',
+      as: 'posts',
+    });
+    User.hasMany(Comment, {
+      foreignKey: 'authorId',
+      as: 'comments',
     });
     User.hasMany(Rating, {
       foreignKey: 'userId',

@@ -15,11 +15,12 @@ RUN npm install
 # 5. Copy the rest of your project files
 COPY . .
 
-# 6. compile typescript
-RUN npm run build
+# 6. Set environment variable
+ENV NODE_ENV=development
+ENV PORT=5001
 
 # 7. Expose the port (must match PORT in .env)
-EXPOSE 5000
+EXPOSE 5001
 
 # 8. Start the app using your dev script
-CMD ["node", "/usr/src/app/dist/src/server.js"]
+CMD ["npm", "run", "dev"]

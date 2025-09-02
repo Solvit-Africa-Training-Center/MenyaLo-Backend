@@ -24,7 +24,11 @@ components:
         email:
           type: string
       example:
+<<<<<<< HEAD
         email: email@example.com
+=======
+        email: string
+>>>>>>> a0deaba (Initial MenyaLo backend setup:)
 
     ErrorResponse:
       type: object
