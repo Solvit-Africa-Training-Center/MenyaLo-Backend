@@ -16,10 +16,26 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      username: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       email: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
+      },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      registrationNumber: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       password: {
         type: Sequelize.STRING,
@@ -38,6 +54,15 @@ module.exports = {
       isActive: {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
+      },
+      googleId: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        unique: true,
+      },
+      provider: {
+        type: Sequelize.ENUM('local', 'google'),
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

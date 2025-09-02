@@ -1,23 +1,25 @@
-import multer, { FileFilterCallback } from 'multer';
+import multer, { FileFilterCallback, StorageEngine } from 'multer';
 import { Request } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
+import path from 'path';
+import fs from 'fs';
 import { config } from 'dotenv';
-import { errorLogger } from './logger';
+import { errorLogger, infoLogger } from './logger';
+
 config();
 
-const cloudinary_api_key = process.env.CLOUDINARY_API_KEY;
-const cloudinary_api_secret = process.env.CLOUDINARY_API_SECRET;
-const cloudinary_api_cloud_name = process.env.CLOUDINARY_CLOUD_NAME;
+// -------------------- Cloudinary Configuration --------------------
 
 cloudinary.config({
-  cloud_name: cloudinary_api_cloud_name,
-  api_key: cloudinary_api_key,
-  api_secret: cloudinary_api_secret,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
 });
 
-// Upload file to Cloudinary
-export const uploadFile = (
+// -------------------- Upload to Cloudinary --------------------
+
+export const uploadToCloudinary = (
   file: Express.Multer.File,
   folder: string = 'menyalo-images',
 ): Promise<string> =>
@@ -27,7 +29,6 @@ export const uploadFile = (
       return;
     }
 
-    // Convert buffer to base64 for Cloudinary
     const base64Data = file.buffer.toString('base64');
     const dataURI = `data:${file.mimetype};base64,${base64Data}`;
 
@@ -42,7 +43,7 @@ export const uploadFile = (
       },
       (error, result) => {
         if (error) {
-          errorLogger(error, 'Cloudinary upload error');
+          errorLogger(error, 'uploadToCloudinary');
           reject(error);
           return;
         }
@@ -55,11 +56,12 @@ export const uploadFile = (
     );
   });
 
-// Upload profile image to Cloudinary
-export const uploadProfileFile = (file: Express.Multer.File): Promise<string> =>
-  uploadFile(file, 'manyalo-images');
+export const uploadProfileImage = (file: Express.Multer.File): Promise<string> =>
+  uploadToCloudinary(file, 'menyalo-profiles');
 
-const multerFilterFile = (req: Request, file: Express.Multer.File, cb: FileFilterCallback):void => {
+// -------------------- File Filters --------------------
+
+const imageFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback): void => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -67,36 +69,65 @@ const multerFilterFile = (req: Request, file: Express.Multer.File, cb: FileFilte
   }
 };
 
-export const storage = multer.memoryStorage();
+const pdfFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback): void => {
+  if (file.mimetype === 'application/pdf') {
+    cb(null, true);
+  } else {
+    cb(new Error('Only PDF files are allowed'));
+  }
+};
 
-export const upload = multer({
-  storage,
-  fileFilter: multerFilterFile,
+// -------------------- Storage Strategies --------------------
+
+export const memoryStorage = multer.memoryStorage();
+
+export const diskStorage = (destination: string): StorageEngine => {
+  // Ensure directory exists
+  if (!fs.existsSync(destination)) {
+    fs.mkdirSync(destination, { recursive: true });
+    infoLogger(`Directory created: ${destination}`, 'diskStorage');
+  }
+
+  return multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, destination);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+      const ext = path.extname(file.originalname);
+      cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+    },
+  });
+};
+
+// -------------------- Multer Configurations --------------------
+
+export const imageUpload = multer({
+  storage: memoryStorage,
+  fileFilter: imageFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB to match our validation
+    fileSize: 5 * 1024 * 1024, // 5MB
   },
 });
 
-export const uploadToCloudinary = async (
-  fileBuffer: Buffer,
-  folder: string = 'menyalo-images',
-): Promise<unknown> =>
-  new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder,
-        use_filename: true,
-        unique_filename: true,
-        overwrite: false,
-        resource_type: 'auto',
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      },
-    );
-    uploadStream.end(fileBuffer);
+export const pdfUpload = (destination: string = path.join(process.cwd(), 'uploads')): multer.Multer =>
+  multer({
+    storage: diskStorage(destination),
+    fileFilter: pdfFilter,
+    limits: {
+      fileSize: 100 * 1024 * 1024, // 100MB per file
+      files: 10, // Maximum 10 files
+    },
   });
+
+// -------------------- Generic Upload Function --------------------
+
+export const createUpload = (options: {
+  storage?: StorageEngine;
+  // eslint-disable-next-line no-unused-vars
+  fileFilter?: (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => void;
+  limits?: {
+    fileSize?: number;
+    files?: number;
+  };
+}): multer.Multer => multer(options);
