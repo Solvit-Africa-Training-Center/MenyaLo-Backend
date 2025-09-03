@@ -1,3 +1,6 @@
+https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend/maintainability.svg)](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend
+[![Code Coverage](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend/coverage.svg)](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend)
+
 # MenyaLo Backend
 
 ## Description
