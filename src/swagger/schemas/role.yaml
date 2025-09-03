@@ -1,0 +1,191 @@
+components:
+  schemas:
+    Auth:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique user identifier
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "jane.smith@example.com"
+        roleId:
+          type: string
+          format: uuid
+          description: User's role identifier
+          example: "456e7890-e89b-12d3-a456-426614174111"
+        isActive:
+          type: boolean
+          description: Indicates if the user account is active
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+          example: "2024-01-15T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: "2024-01-15T10:30:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when user was soft-deleted, null if active
+          example: null
+
+    CreateUser:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "jane.smith@example.com"
+        password:
+          type: string
+          minLength: 8
+          example: "securePassword123"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "jane.smith@example.com"
+        password:
+          type: string
+          example: "securePassword123"
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT authentication token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation successful"
+        data:
+          oneOf:
+            - type: object
+            - type: array
+            - type: "null"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Something went wrong"
+        data:
+          type: object
+          nullable: true
+          example: null
+
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique role identifier
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        name:
+          type: string
+          description: Role name
+          example: "Admin"
+        permissions:
+          type: array
+          description: List of permissions
+          items:
+            type: string
+            example: "read_users"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+
+    CreateRole:
+      type: object
+      required:
+        - name
+        - permissions
+      properties:
+        name:
+          type: string
+          description: Role name
+          example: "Admin"
+        permissions:
+          type: array
+          description: List of permissions
+          items:
+            type: string
+            example: "read_users"
+      example:
+        name: "Admin"
+        permissions:
+          - read_users
+          - edit_users
+          - delete_users
+
+    RoleListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Roles fetched successfully"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
+      example:
+        success: true
+        message: "Roles fetched successfully"
+        data:
+          - id: "123e4567-e89b-12d3-a456-426614174000"
+            name: "Admin"
+            permissions: ["read_users", "edit_users", "delete_users"]
+            createdAt: "2024-01-15T10:30:00Z"
+            updatedAt: "2024-01-15T10:30:00Z"
+            deletedAt: null
+          - id: "789e1234-e89b-12d3-a456-426614174222"
+            name: "User"
+            permissions: ["read_users"]
+            createdAt: "2024-01-20T11:00:00Z"
+            updatedAt: "2024-01-20T11:00:00Z"
+            deletedAt: null

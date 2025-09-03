@@ -64,3 +64,6 @@ export const RoleModel = (sequelize: Sequelize): typeof Role => {
 
   return Role;
 };
+
+
+

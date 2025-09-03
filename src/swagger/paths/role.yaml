@@ -1,0 +1,156 @@
+/roles:
+  get:
+    tags:
+      - Roles
+    summary: Get all roles
+    description: Retrieve a list of all roles in the system
+    responses:
+      '200':
+        description: Roles fetched successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolesResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  post:
+    tags:
+      - Roles
+    summary: Create a new role
+    description: Add a new role to the system
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateRole'
+    responses:
+      '201':
+        description: Role created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleResponse'
+      '400':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/roles/{id}:
+  get:
+    tags:
+      - Roles
+    summary: Get a role by ID
+    description: Retrieve details of a specific role by its ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Role ID
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Role fetched successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleResponse'
+      '404':
+        description: Role not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  put:
+    tags:
+      - Roles
+    summary: Update a role
+    description: Update the details of an existing role
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Role ID
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateRole'
+    responses:
+      '200':
+        description: Role updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleResponse'
+      '404':
+        description: Role not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  delete:
+    tags:
+      - Roles
+    summary: Delete a role
+    description: Remove a role from the system
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Role ID
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Role deleted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleDeleteResponse'
+      '404':
+        description: Role not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'

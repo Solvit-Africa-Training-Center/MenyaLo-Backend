@@ -3,18 +3,19 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { config } from 'dotenv';
 import { redis } from './utils/redis';
-import router from './api/v1';
+import router from './api/v1'; // other API routes
+import roleRouter from './api/v1/role/route'; // role routes
 import { requestLogger, errorLogger } from './utils/logger';
 import { swaggerRouter } from './swagger/router';
-config();
-
 import rateLimit from 'express-rate-limit';
+
+config();
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, //Limit each IP to 100 requests per windowMs
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
   message: 'Too many requests from this IP, please try again later.',
 });
 
@@ -24,12 +25,11 @@ export const createServer = (): Express => {
   app.disable('x-powered-by');
 
   app.use(morgan('dev'));
-
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-
   app.use(cors());
 
+  // Request logger
   app.use((req: Request, res: Response, next: NextFunction) => {
     requestLogger(req);
     next();
@@ -39,7 +39,14 @@ export const createServer = (): Express => {
 
   redis.connect().catch((err) => errorLogger(err, 'Redis Connection'));
 
-  app.use('/api/v1', apiLimiter, router);
+  app.get('/', (req: Request, res: Response) => {
+    res.json({ success: true, message: 'API is running', data: null });
+  });
+
+  app.use('/api/v1', apiLimiter);
+
+  app.use('/api/v1', router);
+  app.use('/api/v1/roles', roleRouter); 
 
   app.use((req: Request, res: Response) => {
     res.status(404).json({
