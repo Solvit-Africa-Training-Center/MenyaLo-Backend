@@ -1,0 +1,98 @@
+components:
+  schemas:
+    Report:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique report identifier
+          example: "abc123e4-56f7-89d0-a123-456789abcdef"
+        reporterId:
+          type: string
+          format: uuid
+          description: ID of the user who made the report
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        reportedId:
+          type: string
+          format: uuid
+          description: ID of the user being reported
+          example: "456e7890-e89b-12d3-a456-426614174111"
+        reason:
+          type: string
+          description: Reason for reporting
+          example: "Spamming messages"
+        reportCount:
+          type: integer
+          description: Total number of times this user has been reported
+          example: 5
+        status:
+          type: string
+          description: Status of the reported user based on report count
+          enum: [active, warning, blocked]
+          example: "warning"
+        createdAt:
+          type: string
+          format: date-time
+          description: Report creation timestamp
+          example: "2025-09-04T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: "2025-09-04T12:30:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the report was soft-deleted, null if active
+          example: null
+
+    CreateReport:
+      type: object
+      required:
+        - reporterId
+        - reportedId
+        - reason
+      properties:
+        reporterId:
+          type: string
+          format: uuid
+          description: ID of the user who is reporting
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        reportedId:
+          type: string
+          format: uuid
+          description: ID of the user being reported
+          example: "456e7890-e89b-12d3-a456-426614174111"
+        reason:
+          type: string
+          description: Reason for reporting
+          example: "Inappropriate behavior"
+
+    ReportListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Reports fetched successfully"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Report"
+      example:
+        success: true
+        message: "Reports fetched successfully"
+        data:
+          - id: "abc123e4-56f7-89d0-a123-456789abcdef"
+            reporterId: "123e4567-e89b-12d3-a456-426614174000"
+            reportedId: "456e7890-e89b-12d3-a456-426614174111"
+            reason: "Spamming messages"
+            reportCount: 5
+            status: "warning"
+            createdAt: "2025-09-04T12:00:00Z"
+            updatedAt: "2025-09-04T12:30:00Z"
+            deletedAt: null
