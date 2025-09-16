@@ -124,7 +124,7 @@ export class SubscriptionService {
         email,
         userName?.name as string,
         'unsubscribe',
-        'You\'ve been unsubscribed from Menyalo',
+        "You've been unsubscribed from Menyalo",
       );
     } catch (error) {
       const { message, stack } = error as Error;

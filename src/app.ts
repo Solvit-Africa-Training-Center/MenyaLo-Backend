@@ -11,7 +11,6 @@ import { swaggerRouter } from './swagger/router';
 import passport from 'passport';
 import { sessionMiddleware } from './utils/session';
 import rateLimit from 'express-rate-limit';
-
 config();
 
 const apiLimiter = rateLimit({
@@ -37,6 +36,14 @@ export const createServer = (): Express => {
   app.set('view engine', 'ejs');
 
   app.use(sessionMiddleware);
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.set('views', 'views');
+  app.set('view engine', 'ejs');
+
+  app.use(sessionMiddleware);
+
   app.use(passport.initialize());
   app.use(passport.session());
 
