@@ -59,7 +59,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       foreignKey: 'userId',
       as: 'profile',
     });
-
     User.hasMany(Rating, {
       foreignKey: 'userId',
       as: 'ratings',

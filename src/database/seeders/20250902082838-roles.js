@@ -18,7 +18,7 @@ module.exports = {
     // Proceed with seeding roles
     await queryInterface.bulkInsert('roles', [
       {
-        id: uuidv4(),
+        id: 'fed2f171-18f9-417c-b248-c7af81368d0d',
         name: 'citizen',
         permissions: ['read'],
         createdAt: new Date(),

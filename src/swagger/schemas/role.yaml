@@ -18,7 +18,6 @@ components:
         updatedAt:
           type: string
           format: date-time
-
     CreateRole:
       type: object
       required:
@@ -53,7 +52,6 @@ components:
       properties:
         message:
           type: string
-
     ErrorResponse:
       type: object
       properties:
