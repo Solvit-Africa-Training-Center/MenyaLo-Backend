@@ -10,7 +10,7 @@ interface ValidateOption<T> {
 
 export const ValidationMiddleware =
   <T>({ type, schema }: ValidateOption<T>) =>
-  (req: Request, res: Response, next: NextFunction):unknown => {
+  (req: Request, res: Response, next: NextFunction): unknown => {
     try {
       const validationQueries = req[type];
       const { error } = (schema as ObjectSchema<T>).validate(validationQueries);

@@ -3,24 +3,25 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const getPrefix = () => {
-  let env = process.env.ENV;
-  if (!env) {
-    return (env = 'DEV');
-  }
-  return env;
-};
+const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT, PGSSLMODE } = process.env;
 
-const databaseConfig = () => {
-  const env = getPrefix();
-  return {
-    username: process.env[`${env}_USERNAME`] || '',
-    database: process.env[`${env}_DATABASE`] || '',
-    password: process.env[`${env}_PASSWORD`] || '',
-    host: process.env[`${env}_HOST`] || '',
-    port: process.env[`${env}_PORT`] || 5432,
-    dialect: 'postgres',
-  };
+const databaseConfig = {
+  username: PGUSER,
+  password: PGPASSWORD,
+  database: PGDATABASE,
+  host: PGHOST,
+  port: parseInt(PGPORT) || 5432,
+  dialect: 'postgres',
+  ssl: PGSSLMODE === 'true',
+  dialectOptions: {
+    ssl:
+      PGSSLMODE === 'true'
+        ? {
+            require: true,
+            rejectUnauthorized: false,
+          }
+        : false,
+  },
 };
 
 module.exports = databaseConfig;

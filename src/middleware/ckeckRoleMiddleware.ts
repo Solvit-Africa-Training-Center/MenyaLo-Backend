@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { ResponseService } from '../utils/response';
-import { Role } from '../database/models/Role';
-import { IRequestUser } from './authMiddleware';
+import { Database } from '../database';
+import { IRequestUser } from './unifiedAuthMiddleware';
 
 export const checkRole =
   (roles: string[]) =>
@@ -17,17 +17,17 @@ export const checkRole =
         });
       }
 
-      const userRole = await Role.findByPk(req.user.role);
+      const userRole = await Database.Role.findOne({ where: { id: req.user.role }, raw: true });
       if (!userRole) {
-        return ResponseService({
+        ResponseService({
           data: null,
           status: 403,
           success: false,
           message: 'Invalid role',
           res,
         });
+        return;
       }
-
       if (!roles.includes(userRole.name)) {
         return ResponseService({
           data: null,
@@ -37,7 +37,6 @@ export const checkRole =
           res,
         });
       }
-
       next();
     } catch (error) {
       const { message } = error as Error;

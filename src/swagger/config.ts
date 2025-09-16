@@ -21,6 +21,10 @@ const swaggerDefinition: SwaggerDefinition = {
       url: 'http://localhost:5001/api/v1',
       description: 'Docker development server',
     },
+    {
+      url: 'https://menyalo-backend.onrender.com',
+      description: 'Deployed url on Render',
+    },
   ],
   components: {
     securitySchemes: {

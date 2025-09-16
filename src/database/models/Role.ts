@@ -7,6 +7,7 @@ export interface RoleAttributes {
   permissions?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+  deletedAt: null;
 }
 
 export interface RoleCreationAttributes
@@ -18,8 +19,9 @@ export class Role extends Model<RoleAttributes, RoleCreationAttributes> implemen
   public id!: string;
   public name!: string;
   public permissions?: string[];
-  public createdAt?: Date;
+  public createdAt: Date = new Date();
   public updatedAt?: Date;
+  public deletedAt: null = null;
 
   static associate(models: { User: typeof User }): void {
     Role.hasMany(models.User, {
@@ -51,6 +53,21 @@ export const RoleModel = (sequelize: Sequelize): typeof Role => {
       permissions: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true,
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      deletedAt: {
+        allowNull: true,
+        type: DataTypes.DATE,
+        defaultValue: null,
       },
     },
     {

@@ -20,10 +20,6 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       userRole: {
-        type: Sequelize.ENUM('User', 'Firm', 'Organization'),
-        allowNull: false,
-      },
-      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -31,17 +27,41 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      avatarUrl: {
+      occupation: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      logoUrl: {
+      imageUrl: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      organisationType: {
-        type: Sequelize.ENUM('ForProfit', 'NonProfit', 'Governmental'),
-        allowNull: false,
+      website: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      phoneNumber: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      teamSize: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      yearsOfExperience: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      caseResolved: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      successRate: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      establishedAt: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

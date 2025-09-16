@@ -7,13 +7,19 @@ import {
   generateToken,
   hashPassword,
 } from '../../../../utils/helper';
+import { errorLogger, logger } from '../../../../utils/logger';
+import { IRequestUser } from '../../../../middleware/unifiedAuthMiddleware';
 
 export class AuthService {
-  data: CreateUserInterface;
+  data: CreateCitizenInterface | CreateOrganizationInterface;
   token: string;
   res: Response;
 
-  constructor(data: CreateUserInterface, res: Response, token: string) {
+  constructor(
+    data: CreateCitizenInterface | CreateOrganizationInterface,
+    res: Response,
+    token: string,
+  ) {
     this.data = data;
     this.res = res;
     this.token = token;
@@ -21,7 +27,7 @@ export class AuthService {
 
   async citizenRegister(): Promise<void> {
     try {
-      const { email, password } = this.data;
+      const { username, email, password } = this.data as CreateCitizenInterface;
 
       const role = await Database.Role.findOne({ where: { name: 'citizen' }, raw: true });
       if (!role) {
@@ -47,6 +53,7 @@ export class AuthService {
       }
 
       const user = await Database.User.create({
+        username,
         email,
         password: await hashPassword(password),
         roleId: role?.id,
@@ -73,7 +80,8 @@ export class AuthService {
 
   async organizationRegister(): Promise<void> {
     try {
-      const { email, password } = this.data;
+      const { name, email, address, registrationNumber, password } = this
+        .data as CreateOrganizationInterface;
 
       const role = await Database.Role.findOne({ where: { name: 'organization' }, raw: true });
       if (!role) {
@@ -99,7 +107,10 @@ export class AuthService {
       }
 
       const user = await Database.User.create({
+        name,
         email,
+        address,
+        registrationNumber,
         password: await hashPassword(password),
         roleId: role?.id,
         isActive: true,
@@ -125,7 +136,8 @@ export class AuthService {
 
   async lawFirmRegister(): Promise<void> {
     try {
-      const { email, password } = this.data;
+      const { name, email, address, registrationNumber, password } = this
+        .data as CreateOrganizationInterface;
 
       const role = await Database.Role.findOne({ where: { name: 'law-firm' }, raw: true });
       if (!role) {
@@ -151,12 +163,14 @@ export class AuthService {
       }
 
       const user = await Database.User.create({
+        name,
         email,
+        address,
+        registrationNumber,
         password: await hashPassword(password),
         roleId: role?.id,
         isActive: true,
       });
-
       ResponseService({
         data: user,
         message: 'User created successfully',
@@ -202,7 +216,6 @@ export class AuthService {
 
         return;
       }
-
       const token = await generateToken({ id: user.id, email: user.email, role: user.roleId });
       ResponseService({
         data: { token },
@@ -222,27 +235,101 @@ export class AuthService {
     }
   }
 
-  async logout(): Promise<void> {
+  async logout(req: IRequestUser, res: Response): Promise<void> {
     try {
-      const token = this.token;
+      const userId = req.user?.id;
+      const provider = req.user?.provider || 'unknown';
+      const logoutPromises: Promise<unknown>[] = [];
+      logger.info(`Starting logout for user ${userId} via ${provider} auth`);
 
-      await destroyToken(token);
+      // Handle JWT token destruction (works with your existing system)
+      if (req.token) {
+        logger.info('Destroying JWT token');
+        logoutPromises.push(destroyToken(req.token));
+      }
+
+      // Handle cookie-based JWT token
+      if (req.cookies?.auth_token && req.cookies.auth_token !== req.token) {
+        logger.info('Destroying cookie JWT token');
+        logoutPromises.push(destroyToken(req.cookies.auth_token));
+      }
+
+      // Handle session-based logout (OAuth)
+      if (req.logout && typeof req.logout === 'function') {
+        logger.info('Destroying OAuth session');
+        const sessionLogoutPromise = new Promise<void>((resolve, reject) => {
+          req.logout((err) => {
+            if (err) {
+              errorLogger(err as Error, 'Session logout error:');
+              reject(err);
+            } else {
+              resolve();
+            }
+          });
+        });
+        logoutPromises.push(sessionLogoutPromise);
+      }
+
+      // Handle session destruction
+      if (req.session) {
+        logger.info('Destroying Express session');
+        const sessionDestroyPromise = new Promise<void>((resolve, reject) => {
+          req.session.destroy((err) => {
+            if (err) {
+              errorLogger(err as Error, 'Session destroy error');
+              reject(err);
+            } else {
+              resolve();
+            }
+          });
+        });
+        logoutPromises.push(sessionDestroyPromise);
+      }
+
+      // Wait for all logout operations
+      const results = await Promise.allSettled(logoutPromises);
+
+      // Check for any failures
+      const failures: PromiseRejectedResult[] = results.filter(
+        (result) => result.status === 'rejected',
+      );
+      if (failures.length > 0) {
+        const error = new Error(
+          `${failures.length} logout operations failed: ${failures.map((f) => f.reason).join(', ')}`,
+        );
+        errorLogger(error, 'Some logout operations failed');
+      }
+
+      // Clear cookies
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
+      res.clearCookie('connect.sid');
+
+      logger.info(`User ${userId} logged out successfully`);
 
       ResponseService({
         data: null,
         status: 200,
         success: true,
         message: 'Logout successful',
-        res: this.res,
+        res,
       });
-    } catch (err) {
-      const { message, stack } = err as Error;
+      return;
+    } catch (error) {
+      errorLogger(error as Error, 'Logout error');
+
+      const { message, stack } = error as Error;
       ResponseService({
         data: { message, stack },
         status: 500,
         success: false,
-        res: this.res,
+        message: 'Logout failed - please try again',
+        res,
       });
+      return;
     }
   }
 }

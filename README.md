@@ -1,3 +1,6 @@
+[![Maintainability](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend/maintainability.svg)](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend)
+[![Code Coverage](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend/coverage.svg)](https://qlty.sh/gh/Solvit-Africa-Training-Center/projects/MenyaLo-Backend)
+
 # MenyaLo Backend
 
 ## Description
@@ -60,7 +63,7 @@ This backend service powers MenyaLo’s RESTful APIs for user authentication, la
 - **Testing**: Jest
 - **Containerization**: Docker, Docker Compose
 - **AI Integration**: RAG LLM using Rwanda Law Gazette as external source
-- **Authentication**: JWT, session-based, and OAuth2 hybrid strategies
+- **Authentication**: JWT, and OAuth2 hybrid strategies
 - **Environment Management**: Joi-based config validation
 
 ---
@@ -100,18 +103,23 @@ To get started with the MenyaLo backend, follow these steps:
 6. Run docker:
 
    -Run docker detached
+
    ```bash
    npm run docker:up
    ```
+
    -Run docker in the foreground
+
    ```bash
    docker-compose up
    ```
+
 7. Run tests:
 
    ```bash
    npm run test
    ```
-## API Documentation 
+
+## API Documentation
 
 API documentation is available at [MenyaLo API Docs](http://localhost:5001/docs/).

@@ -6,7 +6,7 @@ export interface FileValidationOptions {
   maxFiles?: number;
   minFiles?: number;
   allowedMimeTypes?: string[];
-  maxFileSize?: number; // in bytes
+  maxFileSize?: number;
 }
 
 export const fileValidationMiddleware =

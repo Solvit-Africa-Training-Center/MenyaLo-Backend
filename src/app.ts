@@ -1,14 +1,16 @@
 import express, { Request, Response, Express, NextFunction } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import helmet from 'helmet';
 import { config } from 'dotenv';
-import { redis } from './utils/redis';
+import redis from './utils/redis';
 import router from './api/v1';
 import { requestLogger, errorLogger } from './utils/logger';
 import { swaggerRouter } from './swagger/router';
-config();
-
+import passport from 'passport';
+import { sessionMiddleware } from './utils/session';
 import rateLimit from 'express-rate-limit';
+config();
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -23,16 +25,35 @@ export const createServer = (): Express => {
 
   app.disable('x-powered-by');
 
-  app.use(morgan('dev'));
+  app.use(morgan('production'));
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  app.use(cors());
+  app.use(helmet());
+  app.use(
+    cors({
+      origin: 'https://menyalo-frontend.onrender.com',
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      credentials: true,
+    }),
+  );
+
+  app.set('views', 'views');
+  app.set('view engine', 'ejs');
+
+  app.use(sessionMiddleware);
+
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     requestLogger(req);
     next();
+  });
+
+  app.get('/health', (req: Request, res: Response): void => {
+    res.status(200).json({ status: 'OK' });
   });
 
   app.use(swaggerRouter);

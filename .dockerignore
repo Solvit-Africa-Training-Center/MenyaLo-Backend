@@ -38,5 +38,4 @@ docs
 Dockerfile*
 docker-compose*.yml
 .dockerignore
-
-
+.env.docker.example

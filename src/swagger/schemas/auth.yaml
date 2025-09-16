@@ -1,59 +1,58 @@
 components:
   schemas:
-    Auth:
+    CreateCitizen:
       type: object
+      required:
+        - username
+        - email
+        - password
       properties:
-        id:
+        username:
           type: string
-          format: uuid
-          description: Unique user identifier
+          minLength: 3
+          description: User's, citizen, username
         email:
           type: string
           format: email
           description: User's email address
-        roleId:
+        password:
           type: string
-          format: uuid
-          description: User's role identifier
-        isActive:
-          type: boolean
-          description: 'Indicates whether the user account is active. If false, the user may be restricted from logging in or accessing protected resources.'
-        createdAt:
-          type: string
-          format: date-time
-          description: Account creation timestamp
-        updatedAt:
-          type: string
-          format: date-time
-          description: Last update timestamp
-        deletedAt:
-          type: string
-          format: date-time
-          nullable: true
-          description: Timestamp indicating when the user was soft-deleted. Null if the user is active.
+          minLength: 8
+          description: User's chosen password
       example:
-        id: '123e4567-e89b-12d3-a456-426614174000'
+        username: 'jsmith'
         email: 'jane.smith@example.com'
-        roleId: '456e7890-e89b-12d3-a456-426614174111'
-        isActive: true
-        createdAt: '2024-01-15T10:30:00Z'
-        updatedAt: '2024-01-15T10:30:00Z'
-        deletedAt: null
+        password: 'securePassword123'
 
-    CreateUser:
+    CreateOrganization:
       type: object
       required:
+        - name
         - email
+        - address
+        - registrationNumber
         - password
       properties:
+        name:
+          type: string
+          minLength: 2
         email:
           type: string
           format: email
+        address:
+          type: string
+          minLength: 2
+        registrationNumber:
+          type: number
+          minLength: 9
         password:
           type: string
           minLength: 8
       example:
-        email: 'jane.smith@example.com'
+        name: Iwacu
+        email: 'admin@iwacu.com'
+        address: 'KN 19 Ave'
+        registrationNumber: '123224553'
         password: 'securePassword123'
 
     LoginRequest:

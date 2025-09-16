@@ -1,13 +1,20 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import { Role } from './Role';
 import { Profile } from './Profile';
+import { Rating } from './Rating';
 
 interface UserAttributes {
   id: string;
+  username?: string;
+  name?: string;
   email: string;
+  address?: string;
+  registrationNumber?: number;
   password: string;
   roleId: string;
   isActive: boolean;
+  googleId?: string;
+  provider?: 'local' | 'google';
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: null;
@@ -23,24 +30,39 @@ export interface UserCreationAttributes
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;
+  public username!: string;
+  public name?: string;
   public email!: string;
+  public address?: string;
+  public registrationNumber?: number;
   public password!: string;
   public roleId!: string;
   public isActive!: boolean;
+  public googleId?: string;
+  public provider?: 'local' | 'google';
 
   public createdAt: Date = new Date();
   public updatedAt!: Date;
   public deletedAt: null = null;
 
-  static associate(models: { Role: typeof Role; Profile: typeof Profile }): void {
+  static associate(models: {
+    Role: typeof Role;
+    Profile: typeof Profile;
+    Rating: typeof Rating;
+  }): void {
     User.belongsTo(models.Role, {
       foreignKey: 'roleId',
       as: 'role',
     });
 
-    User.hasMany(models.Profile, {
+    User.hasOne(models.Profile, {
       foreignKey: 'userId',
-      as: 'user',
+      as: 'profile',
+    });
+
+    User.hasMany(Rating, {
+      foreignKey: 'userId',
+      as: 'ratings',
     });
   }
 
@@ -60,11 +82,28 @@ export const UserModel = (sequelize: Sequelize): typeof User => {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
+        allowNull: false,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      username: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+      },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      registrationNumber: {
+        type: DataTypes.NUMBER,
+        allowNull: true,
       },
       password: {
         type: DataTypes.STRING,
@@ -83,6 +122,15 @@ export const UserModel = (sequelize: Sequelize): typeof User => {
       isActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
+      },
+      googleId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
+      },
+      provider: {
+        type: DataTypes.ENUM('local', 'google'),
+        allowNull: true,
       },
     },
     {
