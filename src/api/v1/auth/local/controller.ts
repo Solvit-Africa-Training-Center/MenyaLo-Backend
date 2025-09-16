@@ -21,7 +21,6 @@ export class AuthController {
       throw error as Error;
     }
   }
-
   public lawFirmRegister(req: IRequestUser, res: Response): void {
     try {
       const token = req.token as string;
