@@ -314,7 +314,7 @@ export class AuthService {
         errorLogger(error, 'Some logout operations failed');
       }
 
-      // Clear cookies
+  
       res.clearCookie('auth_token', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
