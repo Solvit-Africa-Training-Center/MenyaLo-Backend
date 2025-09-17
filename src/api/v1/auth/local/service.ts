@@ -204,6 +204,19 @@ export class AuthService {
         return;
       }
 
+      const role = await Database.Role.findOne({where:{id: user.roleId}, raw: true});
+
+      if (!role) {
+        ResponseService({
+          data: null,
+          status: 404,
+          success: false,
+          message: 'User not found',
+          res: this.res,
+        });
+        return;
+      }
+
       const validPassword = await comparePassword(password, user.password);
       if (!validPassword) {
         ResponseService({
@@ -216,7 +229,8 @@ export class AuthService {
 
         return;
       }
-      const token = await generateToken({ id: user.id, email: user.email, role: user.roleId });
+
+      const token = await generateToken({ id: user.id, email: user.email, role: role.name });
       ResponseService({
         data: { token },
         status: 200,

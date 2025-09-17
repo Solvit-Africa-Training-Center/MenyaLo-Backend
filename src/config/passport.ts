@@ -11,7 +11,7 @@ passport.use(
       // options for the google strategy
       clientID: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      callbackURL: '/api/v1/auth/google/redirect',
+      callbackURL: 'https://menyalo-backend.onrender.com/api/v1/auth/google/redirect',
     },
     handleOAuthUser,
   ),
