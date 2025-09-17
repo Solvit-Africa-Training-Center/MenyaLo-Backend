@@ -1,6 +1,7 @@
 import express, { Request, Response, Express, NextFunction } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import { corsOptions } from './middleware/corsMiddleware';
 import helmet from 'helmet';
 import { config } from 'dotenv';
 import redis from './utils/redis';
@@ -10,11 +11,12 @@ import { swaggerRouter } from './swagger/router';
 import passport from 'passport';
 import { sessionMiddleware } from './utils/session';
 import rateLimit from 'express-rate-limit';
+
 config();
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, //Limit each IP to 100 requests per windowMs
+  max: 100, // Limit each IP to 100 requests per windowMs
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: 'Too many requests from this IP, please try again later.',
@@ -24,26 +26,16 @@ export const createServer = (): Express => {
   const app = express();
 
   app.disable('x-powered-by');
-
   app.use(morgan('production'));
-
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-
+  app.use(cors(corsOptions));
   app.use(helmet());
-  app.use(
-    cors({
-      origin: 'https://menyalo-frontend.onrender.com',
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
-      credentials: true,
-    }),
-  );
 
   app.set('views', 'views');
   app.set('view engine', 'ejs');
 
   app.use(sessionMiddleware);
-
   app.use(passport.initialize());
   app.use(passport.session());
 
