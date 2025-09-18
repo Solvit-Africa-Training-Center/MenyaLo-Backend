@@ -1,11 +1,15 @@
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { ResponseService } from '../utils/response';
 import { generateToken } from '../utils/helper';
 import { IRequestUser } from './unifiedAuthMiddleware';
 import { errorLogger } from '../utils/logger';
 import { Database } from '../database';
 
-export const generateOAuthToken = async (req: IRequestUser, res: Response): Promise<void> => {
+export const generateOAuthToken = async (
+  req: IRequestUser,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = req.user as any;
@@ -47,13 +51,8 @@ export const generateOAuthToken = async (req: IRequestUser, res: Response): Prom
       provider: 'google',
     });
 
-    ResponseService<string>({
-      data: token,
-      status: 200,
-      success: true,
-      message: 'Login successful',
-      res,
-    });
+    req.token = token;
+    next();
   } catch (error) {
     const { message, stack } = error as Error;
     ResponseService({

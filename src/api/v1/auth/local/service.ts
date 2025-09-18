@@ -204,14 +204,14 @@ export class AuthService {
         return;
       }
 
-      const role = await Database.Role.findOne({where:{id: user.roleId}, raw: true});
+      const role = await Database.Role.findOne({ where: { id: user.roleId }, raw: true });
 
       if (!role) {
         ResponseService({
           data: null,
           status: 404,
           success: false,
-          message: 'User not found',
+          message: 'Role not found',
           res: this.res,
         });
         return;

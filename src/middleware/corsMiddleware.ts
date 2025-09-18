@@ -3,27 +3,27 @@ import { allowedOrigins } from '../config/allowedOrigins';
 import { logger } from '../utils/logger';
 
 export const corsOptions: cors.CorsOptions = {
-  origin (origin, callback) {
+  origin(origin, callback) {
     logger.info('Request origin:', origin);
-    
+
     // Handle undefined/null origins explicitly
     if (origin === undefined || origin === null) {
       logger.info('Allowing undefined/null origin (server-to-server, mobile app, etc.)');
       return callback(null, true);
     }
-    
+
     // Handle empty string origins
     if (origin === '') {
       logger.info('Allowing empty string origin');
       return callback(null, true);
     }
-    
+
     // Check allowed origins
     if (allowedOrigins.includes(origin)) {
       logger.info('Origin allowed:', origin);
       return callback(null, true);
     }
-    
+
     logger.info('CORS blocked origin:', origin);
     callback(new Error(`Origin "${origin}" not allowed by CORS policy`));
   },
