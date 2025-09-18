@@ -5,6 +5,7 @@ import { createCitizenSchema, createOrganizationSchema, LoginUserSchema } from '
 import { authMiddleware } from '../../../middleware/unifiedAuthMiddleware';
 import passport from '../../../config/passport';
 import { generateOAuthToken } from '../../../middleware/oauthMiddleware';
+import { googleCallBack } from './oauth/controller';
 
 const authRoutes = Router();
 const controller = new AuthController();
@@ -37,6 +38,11 @@ authRoutes.post('/logout', authMiddleware, controller.logout);
 
 // Google Oauth02 routes
 authRoutes.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-authRoutes.get('/google/redirect', passport.authenticate('google'), generateOAuthToken);
+authRoutes.get(
+  '/google/redirect',
+  passport.authenticate('google'),
+  generateOAuthToken,
+  googleCallBack,
+);
 
 export default authRoutes;
