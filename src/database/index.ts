@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import databaseConfig from './config/config';
+import { databaseConfig } from './config/config';
 import { AllModels } from './models';
 
 interface ConfigInterface {
@@ -14,7 +14,7 @@ interface ConfigInterface {
 }
 
 const dbConnection = (): Sequelize => {
-  const db_config = databaseConfig as ConfigInterface;
+  const db_config = databaseConfig() as ConfigInterface;
   const sequelize = new Sequelize(db_config.database, db_config.username, db_config.password, {
     host: db_config.host,
     port: db_config.port,

@@ -134,4 +134,8 @@ export const cleanOldLogs = (days = 30): void => {
   });
 };
 
+export const infoLogger = (message: string, context?: string): void => {
+  logger.info(`${context ? `[${context}] ` : ''}${message}`);
+};
+
 export { logger };

@@ -1,0 +1,145 @@
+paths:
+  /documents/upload:
+    post:
+      tags:
+        - Documents
+      summary: Upload a document for RAG
+      description: Upload a file to be stored and embedded for retrieval-augmented generation (RAG).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                filename:
+                  type: string
+                  description: Optional filename to override original
+      responses:
+        "201":
+          description: File uploaded and processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        "400":
+          description: No file uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /documents/query:
+    post:
+      tags:
+        - Documents
+      summary: Query the uploaded documents
+      description: Takes a user question and retrieves relevant documents from the database or web, then returns an AI-generated answer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - question
+              properties:
+                question:
+                  type: string
+                  example: "What is Menyalo?"
+      responses:
+        "200":
+          description: Query successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+        "400":
+          description: Question required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /documents:
+    get:
+      tags:
+        - Documents
+      summary: Get all stored documents
+      description: Returns the list of all documents stored in the database.
+      responses:
+        "200":
+          description: Returns all documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+
+  /documents/{id}:
+    put:
+      tags:
+        - Documents
+      summary: Update a document by ID
+      description: Update the content of a stored document by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+      responses:
+        "200":
+          description: Document updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        "404":
+          description: Document not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Documents
+      summary: Delete a document by ID
+      description: Permanently delete a stored document by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Document deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentDeleteResponse'
+        "404":
+          description: Document not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

@@ -1,0 +1,96 @@
+components:
+  schemas:
+    Document:
+      type: object
+      description: Represents a document stored in the RAG system
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the document
+          example: 1
+        filename:
+          type: string
+          description: Original or uploaded filename
+          example: "example.pdf"
+        content:
+          type: string
+          description: Full text content of the document
+          example: "This is the extracted text content from the document..."
+        embedding:
+          type: array
+          items:
+            type: number
+          description: Vector embedding of the document text used for semantic search
+          example: [0.123, -0.456, 0.789]
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the document was created
+          example: "2025-09-18T10:15:30Z"
+      required:
+        - id
+        - filename
+        - content
+        - embedding
+        - created_at
+
+    DocumentResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Operation result message
+          example: "Document uploaded successfully"
+        document:
+          $ref: '#/components/schemas/Document'
+
+    DocumentDeleteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Operation result message
+          example: "Document deleted successfully"
+
+    QueryResponse:
+      type: object
+      properties:
+        answer:
+          type: string
+          description: Generated answer from the RAG system
+          example: "This is the answer based on the documents context."
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        source:
+          type: string
+          description: Source of the answer
+          enum: [database, web]
+          example: "database"
+
+    ChatbotRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The user's message or question
+          example: "What is the capital of France?"
+      required:
+        - message
+
+    ChatbotResponse:
+      type: object
+      properties:
+        answer:
+          type: string
+          description: The chatbot's generated answer
+          example: "The capital of France is Paris."
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message describing what went wrong
+          example: "Document not found"
