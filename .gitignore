@@ -7,3 +7,5 @@ package-lock.json
 coverage/
 logs/
 __test__
+uploads/
+.history
