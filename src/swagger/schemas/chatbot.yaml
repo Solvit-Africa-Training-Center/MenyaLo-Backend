@@ -1,3 +1,29 @@
+openapi: 3.0.3
+info:
+  title: RAG System API
+  version: 1.0.0
+
+paths:
+  /query-history:
+    get:
+      summary: Get query history
+      description: Retrieve all previous query history records ordered by creation date (newest first).
+      responses:
+        '200':
+          description: A list of query history records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QueryHistoryResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
     Document:
@@ -6,26 +32,21 @@ components:
       properties:
         id:
           type: integer
-          description: Unique identifier for the document
           example: 1
         filename:
           type: string
-          description: Original or uploaded filename
           example: "example.pdf"
         content:
           type: string
-          description: Full text content of the document
           example: "This is the extracted text content from the document..."
         embedding:
           type: array
           items:
             type: number
-          description: Vector embedding of the document text used for semantic search
           example: [0.123, -0.456, 0.789]
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the document was created
           example: "2025-09-18T10:15:30Z"
       required:
         - id
@@ -39,7 +60,6 @@ components:
       properties:
         message:
           type: string
-          description: Operation result message
           example: "Document uploaded successfully"
         document:
           $ref: '#/components/schemas/Document'
@@ -49,7 +69,6 @@ components:
       properties:
         message:
           type: string
-          description: Operation result message
           example: "Document deleted successfully"
 
     QueryResponse:
@@ -57,7 +76,6 @@ components:
       properties:
         answer:
           type: string
-          description: Generated answer from the RAG system
           example: "This is the answer based on the documents context."
         documents:
           type: array
@@ -65,16 +83,42 @@ components:
             $ref: '#/components/schemas/Document'
         source:
           type: string
-          description: Source of the answer
           enum: [database, web]
           example: "database"
+
+    QueryHistoryResponse:
+      type: object
+      description: Represents a query history record in the system
+      properties:
+        id:
+          type: integer
+          example: 1
+        question:
+          type: string
+          example: "What is Menyalo?"
+        answer:
+          type: string
+          example: "Menyalo is a software platform..."
+        source:
+          type: string
+          enum: [database, web]
+          example: "database"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-09-18T10:30:45Z"
+      required:
+        - id
+        - question
+        - answer
+        - source
+        - created_at
 
     ChatbotRequest:
       type: object
       properties:
         message:
           type: string
-          description: The user's message or question
           example: "What is the capital of France?"
       required:
         - message
@@ -84,7 +128,6 @@ components:
       properties:
         answer:
           type: string
-          description: The chatbot's generated answer
           example: "The capital of France is Paris."
 
     ErrorResponse:
@@ -92,5 +135,4 @@ components:
       properties:
         error:
           type: string
-          description: Error message describing what went wrong
           example: "Document not found"

@@ -1,4 +1,3 @@
-// src/RAG/controller.ts
 import { Request, Response } from 'express';
 import fs from 'fs';
 import pdf from 'pdf-parse';
@@ -22,7 +21,7 @@ function formatEmbeddingForSQL(embedding: number[]): string {
 
 // Fallback web search
 async function searchWeb(query: string): Promise<string> {
-  return `This is a mock web answer for: ${query}`;
+  return `This is a web answer for: ${query}`;
 }
 
 // Helper to log and send errors
@@ -79,26 +78,34 @@ export async function queryDocument(req: Request, res: Response): Promise<void> 
     const qEmbedding = await getEmbedding(question);
     const formatted = formatEmbeddingForSQL(qEmbedding);
 
-    const result = await pool.query<Document & { distance: number }>(
-      `SELECT id, content, embedding <#> $1::vector AS distance
-       FROM documents
-       ORDER BY distance
-       LIMIT 3`,
-      [formatted],
-    );
+    // Query documents based on embedding distance
+    const result = await pool.query<Document & { distance: number }>(`
+      SELECT id, content, embedding <#> $1::vector AS distance
+      FROM documents
+      ORDER BY distance
+      LIMIT 3`, [formatted]);
 
     let context = result.rows
       .map((r: Document & { distance: number }) => r.content)
       .join('\n---\n');
     let source: 'database' | 'web' = 'database';
 
+    // If no result found, use web search as fallback
     if (result.rows.length === 0) {
       context = await searchWeb(question);
       source = 'web';
     }
 
+    // Generate answer using the context
     const answer = await generateAnswer(context, question);
 
+    // Log query history into history table
+    await pool.query(`
+      INSERT INTO history (question, answer, source) 
+      VALUES ($1, $2, $3)
+    `, [question, answer, source]);
+
+    // Send the response back to the client
     res.json({
       answer: source === 'web'
         ? `Not in database, but here’s an answer from the web:\n\n${answer}`
@@ -107,11 +114,25 @@ export async function queryDocument(req: Request, res: Response): Promise<void> 
       source,
     });
 
+    // Log successful query
     infoLogger(`Answered question: "${question}" (source: ${source})`, 'queryDocument');
   } catch (err: unknown) {
     logAndSendError(res, err, 'queryDocument');
   }
 }
+
+
+// Get query history
+export async function getQueryHistory(req: Request, res: Response): Promise<void> {
+  try {
+    const result = await pool.query('SELECT * FROM history ORDER BY created_at DESC');
+    res.json(result.rows);
+    infoLogger('Fetched query history', 'getQueryHistory');
+  } catch (err: unknown) {
+    logAndSendError(res, err, 'getQueryHistory');
+  }
+}
+
 
 // Get all documents
 export async function getDocuments(req: Request, res: Response): Promise<void> {

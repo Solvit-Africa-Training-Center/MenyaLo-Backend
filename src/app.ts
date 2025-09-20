@@ -5,12 +5,13 @@ import { corsOptions } from './middleware/corsMiddleware';
 import helmet from 'helmet';
 import { config } from 'dotenv';
 import redis from './utils/redis';
-import router from './api/v1';
+import router from './api/v1/index';
 import { requestLogger, errorLogger } from './utils/logger';
 import { swaggerRouter } from './swagger/router';
 import passport from 'passport';
 import { sessionMiddleware } from './utils/session';
 import rateLimit from 'express-rate-limit';
+
 
 config();
 

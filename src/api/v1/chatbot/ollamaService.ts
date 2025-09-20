@@ -12,7 +12,7 @@ export async function getEmbedding(text: string): Promise<number[]> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'nomic-embed-text:latest', 
-      input: text,
+      prompt: text, 
     }),
   });
 
@@ -21,8 +21,8 @@ export async function getEmbedding(text: string): Promise<number[]> {
     throw new Error(`Embedding failed: ${err}`);
   }
 
-  const data = (await response.json()) as { embeddings?: number[][] };
-  const embedding = data.embeddings?.[0] ?? [];
+  const data = (await response.json()) as { embedding?: number[] }; 
+  const embedding = data.embedding ?? []; 
 
   if (!embedding.length) {
     throw new Error('Failed to generate embedding (empty array)');
@@ -38,6 +38,7 @@ export async function generateAnswer(context: string, question: string): Promise
     body: JSON.stringify({
       model: 'mistral:7b-instruct-q4_K_M',
       prompt: `Use this context to answer the question:\n\n${context}\n\nQuestion: ${question}`,
+      stream: true,
     }),
   });
 
