@@ -38,14 +38,6 @@ export const createServer = (): Express => {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.set('views', 'views');
-  app.set('view engine', 'ejs');
-
-  app.use(sessionMiddleware);
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
   app.use((req: Request, res: Response, next: NextFunction) => {
     requestLogger(req);
     next();
