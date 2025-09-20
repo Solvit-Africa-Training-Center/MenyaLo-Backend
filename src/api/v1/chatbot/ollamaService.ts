@@ -38,7 +38,7 @@ export async function generateAnswer(context: string, question: string): Promise
     body: JSON.stringify({
       model: 'mistral:7b-instruct-q4_K_M',
       prompt: `Use this context to answer the question:\n\n${context}\n\nQuestion: ${question}`,
-      stream: true,
+      stream: false,
     }),
   });
 

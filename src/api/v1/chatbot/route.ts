@@ -45,7 +45,7 @@ router.post('/documents/upload', upload.single('file'), uploadDocument);
 router.post('/documents/query', queryDocument);
 
 // Query-history
-router.get('/query-history', getQueryHistory);
+router.get('documents/query-history', getQueryHistory);
 
 // Get all documents
 router.get('/documents', getDocuments);

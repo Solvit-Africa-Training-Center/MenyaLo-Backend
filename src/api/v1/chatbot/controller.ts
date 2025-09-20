@@ -31,7 +31,6 @@ function logAndSendError(res: Response, err: unknown, context?: string): void {
   res.status(500).json({ error: error.message });
 }
 
-
 // Upload PDF and store chunks
 export async function uploadDocument(req: Request, res: Response): Promise<void> {
   try {
@@ -99,9 +98,9 @@ export async function queryDocument(req: Request, res: Response): Promise<void> 
     // Generate answer using the context
     const answer = await generateAnswer(context, question);
 
-    // Log query history into query_history table
+    // Log query history into history table
     await pool.query(`
-      INSERT INTO "history" (question, answer, source) 
+      INSERT INTO history (question, answer, source) 
       VALUES ($1, $2, $3)
     `, [question, answer, source]);
 
@@ -121,18 +120,16 @@ export async function queryDocument(req: Request, res: Response): Promise<void> 
   }
 }
 
-
 // Get query history
 export async function getQueryHistory(req: Request, res: Response): Promise<void> {
   try {
-    const result = await pool.query('SELECT * FROM "history" ORDER BY created_at DESC');
+    const result = await pool.query('SELECT * FROM history ORDER BY created_at DESC');
     res.json(result.rows);
     infoLogger('Fetched query history', 'getQueryHistory');
   } catch (err: unknown) {
     logAndSendError(res, err, 'getQueryHistory');
   }
 }
-
 
 // Get all documents
 export async function getDocuments(req: Request, res: Response): Promise<void> {
