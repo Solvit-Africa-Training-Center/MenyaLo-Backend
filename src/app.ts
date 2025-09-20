@@ -25,19 +25,12 @@ export const createServer = (): Express => {
   const app = express();
 
   app.disable('x-powered-by');
-  app.use(morgan('production'));
+  app.use(morgan('development'));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
   app.use(cors(corsOptions));
   app.use(helmet());
-
-  app.set('views', 'views');
-  app.set('view engine', 'ejs');
-
-  app.use(sessionMiddleware);
-  app.use(passport.initialize());
-  app.use(passport.session());
 
   app.set('views', 'views');
   app.set('view engine', 'ejs');
