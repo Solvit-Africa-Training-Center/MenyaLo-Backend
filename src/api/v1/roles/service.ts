@@ -40,19 +40,18 @@ export class RoleService {
     }
   }
 
-  async createRole(): Promise<void> {
+  async create(): Promise<unknown> {
     try {
       const { name, permissions } = this.data as CreateRoleInterface;
       const roleExitst = await Database.Role.findOne({ where: { name } });
       if (roleExitst) {
-        ResponseService({
+        return ResponseService({
           data: null,
           status: 409,
           success: false,
           message: 'Role already exists',
           res: this.res,
         });
-        return;
       }
 
       const role = await Database.Role.create({
@@ -78,7 +77,7 @@ export class RoleService {
     }
   }
 
-  async getAllRoles(): Promise<unknown> {
+  async findAll(): Promise<unknown> {
     try {
       const roles = await Database.Role.findAll();
       if (!roles || roles.length === 0) {
@@ -109,7 +108,7 @@ export class RoleService {
     }
   }
 
-  async getASingleRole(): Promise<void> {
+  async findOne(): Promise<void> {
     try {
       if ((await this.roleExist()) === true) {
         const role = await Database.Role.findOne({ where: { id: this.id } });
@@ -132,7 +131,7 @@ export class RoleService {
     }
   }
 
-  async updateRole(): Promise<void> {
+  async update(): Promise<void> {
     try {
       if ((await this.roleExist()) === true) {
         const updatedRole = await Database.Role.update(
@@ -162,7 +161,7 @@ export class RoleService {
     }
   }
 
-  async deleteRole(): Promise<void> {
+  async delete(): Promise<void> {
     try {
       if ((await this.roleExist()) === true) {
         const deletedRole = await Database.Role.destroy({ where: { id: this.id } });

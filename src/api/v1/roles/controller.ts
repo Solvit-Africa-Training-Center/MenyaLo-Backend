@@ -6,7 +6,7 @@ export class RoleController {
     try {
       const { id } = req.params;
       const roleService = new RoleService(req.body, id, res);
-      roleService.createRole();
+      roleService.create();
     } catch (error) {
       throw error as Error;
     }
@@ -16,7 +16,7 @@ export class RoleController {
     try {
       const { id } = req.params;
       const roleService = new RoleService(req.body, id, res);
-      roleService.getAllRoles();
+      roleService.findAll();
     } catch (error) {
       throw error as Error;
     }
@@ -26,7 +26,7 @@ export class RoleController {
     try {
       const { id } = req.params;
       const roleService = new RoleService(req.body, id, res);
-      roleService.getASingleRole();
+      roleService.findOne();
     } catch (error) {
       throw error as Error;
     }
@@ -36,7 +36,7 @@ export class RoleController {
     try {
       const { id } = req.params;
       const roleService = new RoleService(req.body, id, res);
-      roleService.updateRole();
+      roleService.update();
     } catch (error) {
       throw error as Error;
     }
@@ -46,7 +46,7 @@ export class RoleController {
     try {
       const { id } = req.params;
       const roleService = new RoleService(req.body, id, res);
-      roleService.deleteRole();
+      roleService.delete();
     } catch (error) {
       throw error as Error;
     }

@@ -2,7 +2,6 @@ import { Response } from 'express';
 import { Database } from '../../../database';
 import { ResponseService } from '../../../utils/response';
 
-
 export class UserService {
   data: UpdateCitizenInterface | UpdateOrganizationInterface;
   res: Response;
@@ -42,17 +41,18 @@ export class UserService {
       });
     }
   }
-  
+
   async getAllFirms(): Promise<unknown> {
-    try {  
-      const users = await Database.User.findAll({ include:[
-        {
+    try {
+      const users = await Database.User.findAll({
+        include: [
+          {
             model: Database.Role,
             as: 'role',
-            attributes:['id', 'name'],
-        },
-      ],
-    });
+            attributes: ['id', 'name'],
+          },
+        ],
+      });
       if (!users || users.length === 0) {
         ResponseService({
           data: null,

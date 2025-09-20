@@ -16,7 +16,10 @@ interface UserInterface {
 }
 
 type CreateCitizenInterface = Omit<UserInterface, 'id' | 'createdAt' | 'deletedAt'>;
-type CreateOrganizationInterface = Omit<UserInterface, 'id' | 'username' | 'createdAt' | 'deletedAt'>;
+type CreateOrganizationInterface = Omit<
+  UserInterface,
+  'id' | 'username' | 'createdAt' | 'deletedAt'
+>;
 
 type UpdateCitizenInterface = Partial<CreateCitizenInterface>;
 type UpdateOrganizationInterface = Partial<CreateOrganizationfaceInterface>;
