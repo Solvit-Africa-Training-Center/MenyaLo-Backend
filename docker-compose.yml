@@ -19,6 +19,11 @@ services:
       npm run db:seed && 
       npm run dev
       "
-
+    networks:
+      - menyalo-network
 volumes:
   node_modules:
+
+networks:
+  menyalo-network:
+    driver: bridge

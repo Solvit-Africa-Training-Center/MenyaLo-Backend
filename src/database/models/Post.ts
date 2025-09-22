@@ -94,7 +94,7 @@ export const PostModel = (sequelize: Sequelize): typeof Post => {
       },
       deletedAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+        defaultValue: null,
       },
     },
     {

@@ -59,7 +59,7 @@
               content:
                 type: string
                 description: Post content
-              file:
+              image:
                 type: string
                 format: binary
                 description: Optional image file
@@ -154,12 +154,33 @@
     summary: Update a post
     security:
       - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 24
     requestBody:
       required: true
       content:
-        application/json:
+        multipart/form-data:
           schema:
-            $ref: '#/components/schemas/UpdatePost'
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Post title
+                content:
+                  type: string
+                  description: Post content
+                image:
+                  type: string
+                  format: binary
+                  description: Optional image file
+        application/json:                  
+            schema:
+              $ref: '#/components/schemas/UpdatePost'
     responses:
       '200':
         description: Post updated successfully

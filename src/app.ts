@@ -29,11 +29,8 @@ export const createServer = (): Express => {
   app.use(morgan('production'));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-  });
+
+  app.use(cors(corsOptions));
   app.use(helmet());
 
   app.set('views', 'views');

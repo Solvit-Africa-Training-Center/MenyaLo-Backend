@@ -102,7 +102,7 @@ components:
                   type: string
                 stack:
                   type: string
-            - type: "null"
+            - type: 'null'
         success:
           type: boolean
           example: false

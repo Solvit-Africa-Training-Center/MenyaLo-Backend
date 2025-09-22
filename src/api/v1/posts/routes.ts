@@ -23,10 +23,11 @@ postRoutes.post(
   controller.createPost,
 );
 postRoutes.patch(
-  '/',
+  '/:id',
   authMiddleware,
   upload.single('image'),
   singleImageValidation,
+  ValidationMiddleware({ type: 'params', schema: IdValidationSchema }),
   ValidationMiddleware({ type: 'body', schema: updatePostSchema }),
   controller.updatePost,
 );

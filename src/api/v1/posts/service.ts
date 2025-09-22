@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Database } from '../../../database';
 import { ResponseService } from '../../../utils/response';
-import { CreatePostInterface, PostInterface, UpdatePostInterface } from './posts';
+import { CreatePostInterface, GetAllPosts, PostInterface, UpdatePostInterface } from './posts';
 import { generateSlug } from '../../../utils/helper';
 import { uploadFile } from '../../../utils/upload';
 
@@ -28,8 +28,7 @@ export class PostService {
 
   private async postExist(): Promise<{ exists: boolean; post?: PostInterface; error?: unknown }> {
     try {
-      const post = await Database.Post.findOne({where: {id: this.dataId}, raw: true});
-      
+      const post = await Database.Post.findOne({ where: { id: this.dataId }, raw: true });
       if (!post) {
         return { exists: false };
       } else {
@@ -119,10 +118,9 @@ export class PostService {
             ],
           },
         ],
-        raw:true,
       });
       if (!posts || posts.length === 0) {
-        return ResponseService({
+        return ResponseService<GetAllPosts[]>({
           data: [],
           status: 200,
           success: true,
@@ -151,7 +149,7 @@ export class PostService {
   async findOne(): Promise<unknown> {
     try {
       const postCheck = await this.postExist();
-      
+
       if (postCheck.error) {
         const { message, stack } = postCheck.error as Error;
         return ResponseService({
@@ -161,7 +159,7 @@ export class PostService {
           res: this.res,
         });
       }
-      
+
       if (!postCheck.exists) {
         return ResponseService({
           data: null,
@@ -193,9 +191,8 @@ export class PostService {
             ],
           },
         ],
-        // Remove raw: true when using includes
       });
-      
+
       return ResponseService({
         data: post,
         status: 200,
@@ -217,7 +214,6 @@ export class PostService {
   async update(): Promise<unknown> {
     try {
       const postCheck = await this.postExist();
-      
       if (postCheck.error) {
         const { message, stack } = postCheck.error as Error;
         return ResponseService({
@@ -227,7 +223,6 @@ export class PostService {
           res: this.res,
         });
       }
-      
       if (!postCheck.exists) {
         return ResponseService({
           data: null,
@@ -238,15 +233,31 @@ export class PostService {
         });
       }
 
+      let image_url: string = '';
+
+      if (this.file) {
+        try {
+          image_url = await uploadFile(this.file as Express.Multer.File);
+        } catch (error) {
+          const { message, stack } = error as Error;
+          return ResponseService({
+            data: { message, stack },
+            status: 500,
+            success: false,
+            res: this.res,
+          });
+        }
+      }
       const updatedPost = await Database.Post.update(
         {
           ...(this.data as UpdatePostInterface),
+          image_url: image_url as string,
           authorId: this.userId,
           updatedAt: new Date(),
         },
         { where: { id: this.dataId } },
       );
-      
+
       return ResponseService({
         data: updatedPost,
         success: true,
@@ -268,7 +279,7 @@ export class PostService {
   async delete(): Promise<unknown> {
     try {
       const postCheck = await this.postExist();
-      
+
       if (postCheck.error) {
         const { message, stack } = postCheck.error as Error;
         return ResponseService({
@@ -278,7 +289,7 @@ export class PostService {
           res: this.res,
         });
       }
-      
+
       if (!postCheck.exists) {
         return ResponseService({
           data: null,
@@ -290,7 +301,7 @@ export class PostService {
       }
 
       const deletedPost = await Database.Post.destroy({ where: { id: this.dataId } });
-      
+
       return ResponseService({
         data: deletedPost,
         success: true,

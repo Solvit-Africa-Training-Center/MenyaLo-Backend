@@ -2,6 +2,8 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 import { Role } from './Role';
 import { Profile } from './Profile';
 import { Rating } from './Rating';
+import { Post } from './Post';
+import { Comment } from './Comment';
 
 interface UserAttributes {
   id: string;
@@ -49,6 +51,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     Role: typeof Role;
     Profile: typeof Profile;
     Rating: typeof Rating;
+    Post: typeof Post;
+    Comment: typeof Comment;
   }): void {
     User.belongsTo(models.Role, {
       foreignKey: 'roleId',
@@ -63,6 +67,15 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     User.hasMany(Rating, {
       foreignKey: 'userId',
       as: 'ratings',
+    });
+
+    User.hasMany(Post, {
+      foreignKey: 'authorId',
+      as: 'posts',
+    });
+    User.hasMany(Comment, {
+      foreignKey: 'authorId',
+      as: 'comments',
     });
   }
 
