@@ -1,13 +1,4 @@
-process.on('uncaughtException', (error) => {
-    console.error('CRASH:', error.message);
-    console.error('STACK:', error.stack);
-    process.exit(1);
-});
 
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('UNHANDLED REJECTION:', reason);
-    process.exit(1);
-});
 import { createServer } from './app';
 import { Database } from './database';
 import { errorLogger, logStartup } from './utils/logger';
