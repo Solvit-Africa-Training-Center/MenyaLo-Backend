@@ -4,8 +4,8 @@ import { Comment } from './Comment';
 
 interface PostAttributes {
   id: string;
-  title: string;
-  slug: string;
+  title?: string;
+  slug?: string;
   content: string;
   image_url?: string;
   authorId: string;
@@ -21,8 +21,8 @@ export interface PostCreationAttributes extends Omit<PostAttributes, 'id'> {
 
 export class Post extends Model<PostAttributes, PostCreationAttributes> implements PostAttributes {
   public id!: string;
-  public title!: string;
-  public slug!: string;
+  public title?: string;
+  public slug?: string;
   public content!: string;
   public image_url?: string;
   public authorId!: string;
@@ -61,11 +61,11 @@ export const PostModel = (sequelize: Sequelize): typeof Post => {
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       slug: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true,
       },
       content: {

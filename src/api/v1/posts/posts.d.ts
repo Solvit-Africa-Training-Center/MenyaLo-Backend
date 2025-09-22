@@ -2,8 +2,8 @@ import { IRequestUser } from '../../../middleware/unifiedAuthMiddleware';
 
 interface PostInterface {
   id: string;
-  title: string;
-  slug: string;
+  title?: string;
+  slug?: string;
   content: string;
   image_url?: string;
   authorId: string;
@@ -21,14 +21,14 @@ interface PostRequestInterface extends IRequestUser {
   params: {
     id: string;
   };
-  file?:Express.Multer.File;
+  file?: Express.Multer.File;
 }
 interface UpdatePostRequestInterface extends IRequestUser {
   body: UpdatePostInterface;
   params: {
     id: string;
   };
-  file?:Express.Multer.File;
+  file?: Express.Multer.File;
 }
 
 interface GetAllPosts {

@@ -2,7 +2,7 @@
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "./dist",
+    "outDir": "dist",
     "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true

@@ -12,11 +12,11 @@ module.exports = {
       },
       title: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       slug: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true,
       },
       content: {
@@ -55,7 +55,7 @@ module.exports = {
       deletedAt: {
         type: Sequelize.DATE,
         allowNull: true,
-        defaultValue:null
+        defaultValue: null,
       },
     });
   },

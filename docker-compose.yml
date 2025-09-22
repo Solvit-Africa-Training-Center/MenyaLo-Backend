@@ -12,7 +12,7 @@ services:
       - '5001:5001'
     volumes:
       - ./:/usr/src/app/
-      - node_modules:/app/node_modules
+      - node_modules:/usr/src/app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
@@ -28,15 +28,7 @@ services:
       - menyalo-network
 
   postgres:
-<<<<<<< HEAD
-<<<<<<< HEAD
     image: pgvector/pgvector:pg16
-=======
-    image: postgres:16.9-alpine
->>>>>>> 833906b (Initial MenyaLo backend setup:)
-=======
-    image: pgvector/pgvector:pg16
->>>>>>> fbcfc4f (Chatbot integration and enhancements:)
     container_name: menyalo_postgres
     env_file:
       - .env.docker
@@ -96,12 +88,4 @@ volumes:
 
 networks:
   menyalo-network:
-<<<<<<< HEAD
-<<<<<<< HEAD
     driver: bridge
-=======
-    driver: bridge
->>>>>>> 833906b (Initial MenyaLo backend setup:)
-=======
-    driver: bridge
->>>>>>> fbcfc4f (Chatbot integration and enhancements:)

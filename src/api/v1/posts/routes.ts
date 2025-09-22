@@ -3,7 +3,6 @@ import { authMiddleware } from '../../../middleware/unifiedAuthMiddleware';
 import { ValidationMiddleware } from '../../../middleware/validationMiddleware';
 import { PostController } from './controller';
 import { createPostSchema, IdValidationSchema, updatePostSchema } from './validators';
-import { singleImageValidation } from '../../../middleware/fileMiddleware';
 import { upload } from '../../../utils/upload';
 
 const postRoutes = Router();
@@ -26,7 +25,6 @@ postRoutes.patch(
   '/:id',
   authMiddleware,
   upload.single('image'),
-  singleImageValidation,
   ValidationMiddleware({ type: 'params', schema: IdValidationSchema }),
   ValidationMiddleware({ type: 'body', schema: updatePostSchema }),
   controller.updatePost,

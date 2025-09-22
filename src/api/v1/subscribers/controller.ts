@@ -7,7 +7,8 @@ export class SubscriptionController {
   public async subscribe(req: RequestSubscriberInterface, res: Response): Promise<void> {
     try {
       const { token } = req.query;
-      const service = new SubscriptionService(req.body, token as string, res);
+      const { email } = req.body;
+      const service = new SubscriptionService(email, token as string, res);
       service.subscribe();
     } catch (error) {
       throw error as Error;

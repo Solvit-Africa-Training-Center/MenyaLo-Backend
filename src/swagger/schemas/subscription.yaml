@@ -24,7 +24,7 @@ components:
         email:
           type: string
       example:
-        email: string
+        email: email@example.com
 
     ErrorResponse:
       type: object
