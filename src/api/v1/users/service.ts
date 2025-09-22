@@ -9,19 +9,14 @@ export class UserService {
   dataId: string;
   res: Response;
 
-  constructor(
-    data: UpdateUserInterface,
-    userId: string,
-    dataId: string,
-    res: Response,
-  ) {
+  constructor(data: UpdateUserInterface, userId: string, dataId: string, res: Response) {
     this.data = data;
     this.userId = userId;
     this.dataId = dataId;
     this.res = res;
   }
 
-  private async userExist(): Promise<{ exists: boolean; user?:UserInterface; error?: unknown }> {
+  private async userExist(): Promise<{ exists: boolean; user?: UserInterface; error?: unknown }> {
     try {
       const user = await Database.User.findOne({ where: { id: this.dataId }, raw: true });
       if (!user) {
@@ -36,7 +31,6 @@ export class UserService {
 
   async findAll(): Promise<unknown> {
     try {
-  
       const users = await Database.User.findAll({
         include: [
           {
@@ -131,7 +125,10 @@ export class UserService {
 
   async findOrganizations(): Promise<unknown> {
     try {
-      const organizationRole = await Database.Role.findOne({ where: { name: 'organization' }, raw: true });
+      const organizationRole = await Database.Role.findOne({
+        where: { name: 'organization' },
+        raw: true,
+      });
       if (!organizationRole) {
         return ResponseService({
           data: null,
@@ -316,10 +313,10 @@ export class UserService {
       const updatedUser = await Database.User.update(
         {
           ...updateData,
-          roleId:userCheck.user?.roleId,
-          isActive:userCheck.user?.isActive,
-          googleId:userCheck.user?.googleId,
-          provider:userCheck.user?.provider,
+          roleId: userCheck.user?.roleId,
+          isActive: userCheck.user?.isActive,
+          googleId: userCheck.user?.googleId,
+          provider: userCheck.user?.provider,
           updatedAt: new Date(),
         },
         { where: { id: this.dataId } },

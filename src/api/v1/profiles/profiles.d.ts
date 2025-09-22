@@ -52,13 +52,19 @@ type CreateLawFirmProfileInterface = {
   establishedAt?: Date;
 };
 
-type CreateProfileInterface = CreateCitizenProfileInterface | CreateOrganizationProfileInterface | CreateLawFirmProfileInterface;
+type CreateProfileInterface =
+  | CreateCitizenProfileInterface
+  | CreateOrganizationProfileInterface
+  | CreateLawFirmProfileInterface;
 
 type UpdateCitizenProfileInterface = Partial<CreateCitizenProfileInterface>;
 type UpdateOrganizationProfileInterface = Partial<CreateOrganizationProfileInterface>;
 type UpdateLawFirmProfileInterface = Partial<CreateLawFirmProfileInterface>;
 
-type UpdateProfileInterface = UpdateCitizenProfileInterface | UpdateOrganizationProfileInterface | UpdateLawFirmProfileInterface;
+type UpdateProfileInterface =
+  | UpdateCitizenProfileInterface
+  | UpdateOrganizationProfileInterface
+  | UpdateLawFirmProfileInterface;
 
 interface GetAllProfiles {
   profiles: ProfileInterface[];

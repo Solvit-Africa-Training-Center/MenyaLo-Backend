@@ -20,7 +20,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Users successfully retrieved"
+                  example: 'Users successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -59,7 +59,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Citizens successfully retrieved"
+                  example: 'Citizens successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -98,7 +98,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Organizations successfully retrieved"
+                  example: 'Organizations successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -137,7 +137,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Law firms successfully retrieved"
+                  example: 'Law firms successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -181,7 +181,7 @@
                   example: true
                 message:
                   type: string
-                  example: "User successfully retrieved"
+                  example: 'User successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -235,7 +235,7 @@
                   example: true
                 message:
                   type: string
-                  example: "User successfully updated"
+                  example: 'User successfully updated'
                 status:
                   type: integer
                   example: 200
@@ -281,7 +281,7 @@
                   example: true
                 message:
                   type: string
-                  example: "User successfully deleted"
+                  example: 'User successfully deleted'
                 status:
                   type: integer
                   example: 200

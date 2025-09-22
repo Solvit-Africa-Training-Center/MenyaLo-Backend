@@ -1,6 +1,7 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import { User } from './User';
 import { Comment } from './Comment';
+import { Upvote } from './Upvote';
 
 interface PostAttributes {
   id: string;
@@ -32,7 +33,11 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public updatedAt!: Date;
   public deletedAt!: Date | null;
 
-  static associate(models: { User: typeof User; Comment: typeof Comment }): void {
+  static associate(models: {
+    User: typeof User;
+    Comment: typeof Comment;
+    Upvote: typeof Upvote;
+  }): void {
     Post.belongsTo(models.User, {
       foreignKey: 'authorId',
       as: 'author',
@@ -41,6 +46,11 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     Post.hasMany(models.Comment, {
       foreignKey: 'postId',
       as: 'comments',
+    });
+
+    Post.hasMany(models.Upvote, {
+      foreignKey: 'postId',
+      as: 'upvotes',
     });
   }
 

@@ -2,7 +2,12 @@ import { Response } from 'express';
 import { Database } from '../../../database';
 import { ResponseService } from '../../../utils/response';
 import { uploadFile } from '../../../utils/upload';
-import { CreateProfileInterface, GetAllProfiles, ProfileInterface, UpdateProfileInterface } from './profiles';
+import {
+  CreateProfileInterface,
+  GetAllProfiles,
+  ProfileInterface,
+  UpdateProfileInterface,
+} from './profiles';
 import { errorLogger } from '../../../utils/logger';
 
 export class ProfileService {

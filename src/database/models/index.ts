@@ -7,6 +7,7 @@ import { Subscriber, SubscriberModel } from './Subscriber';
 import { Post, PostModel } from './Post';
 import { Comment, CommentModel } from './Comment';
 import { Reply, ReplyModel } from './Reply';
+import { Upvote, UpvoteModel } from './Upvote';
 
 interface Models {
   Role: typeof Role;
@@ -17,6 +18,7 @@ interface Models {
   Post: typeof Post;
   Comment: typeof Comment;
   Reply: typeof Reply;
+  Upvote: typeof Upvote;
 }
 
 export const AllModels = (sequelize: Sequelize): Models => ({
@@ -28,4 +30,5 @@ export const AllModels = (sequelize: Sequelize): Models => ({
   Post: PostModel(sequelize),
   Comment: CommentModel(sequelize),
   Reply: ReplyModel(sequelize),
+  Upvote: UpvoteModel(sequelize),
 });

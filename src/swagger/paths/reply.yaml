@@ -1,11 +1,24 @@
-/posts:
+/posts/{postId}/comments/{commentId}/replies:
   get:
     tags:
-      - Posts
-    summary: Get all posts
+      - Replies
+    summary: Get all replies for a comment
+    parameters:
+      - name: postId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: commentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       '200':
-        description: Posts fetched successfully
+        description: Replies fetched successfully
         content:
           application/json:
             schema:
@@ -14,18 +27,18 @@
                 data:
                   type: array
                   items:
-                    $ref: '#/components/schemas/PostWithAuthorAndComments'
+                    $ref: '#/components/schemas/ReplyWithAuthorAndComment'
                 success:
                   type: boolean
                   example: true
                 message:
                   type: string
-                  example: 'Posts successfully retrieved'
+                  example: 'Replies successfully retrieved'
                 status:
                   type: integer
                   example: 200
       '404':
-        description: Posts not found
+        description: Post or Comment not found
         content:
           application/json:
             schema:
@@ -39,46 +52,45 @@
 
   post:
     tags:
-      - Posts
-    summary: Create a new post
+      - Replies
+    summary: Create a new reply for a comment
     security:
       - bearerAuth: []
+    parameters:
+      - name: postId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: commentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:
-        multipart/form-data:
-          schema:
-            type: object
-            properties:
-              title:
-                type: string
-                description: Post title
-              content:
-                type: string
-                description: Post content
-              image:
-                type: string
-                format: binary
-                description: Optional image file
         application/json:
           schema:
-            $ref: '#/components/schemas/CreatePost'
+            $ref: '#/components/schemas/CreateReply'
     responses:
       '201':
-        description: Post created successfully
+        description: Reply created successfully
         content:
           application/json:
             schema:
               type: object
               properties:
                 data:
-                  $ref: '#/components/schemas/Post'
+                  $ref: '#/components/schemas/Reply'
                 success:
                   type: boolean
                   example: true
                 message:
                   type: string
-                  example: 'Post successfully created'
+                  example: 'Reply successfully created'
                 status:
                   type: integer
                   example: 201
@@ -89,7 +101,7 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
       '404':
-        description: Author not found
+        description: Author, Post, or Comment not found
         content:
           application/json:
             schema:
@@ -101,39 +113,51 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
-/posts/{id}:
+/posts/{postId}/comments/{commentId}/replies/{replyId}:
   get:
     tags:
-      - Posts
-    summary: Get a post by ID
+      - Replies
+    summary: Get a reply by ID from a specific comment
     parameters:
-      - name: id
+      - name: postId
         in: path
         required: true
         schema:
           type: string
-          minLength: 24
+          format: uuid
+      - name: commentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: replyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       '200':
-        description: Post fetched successfully
+        description: Reply fetched successfully
         content:
           application/json:
             schema:
               type: object
               properties:
                 data:
-                  $ref: '#/components/schemas/PostWithAuthorAndComments'
+                  $ref: '#/components/schemas/ReplyWithAuthorAndComment'
                 success:
                   type: boolean
                   example: true
                 message:
                   type: string
-                  example: 'Post successfully retrieved'
+                  example: 'Reply successfully retrieved'
                 status:
                   type: integer
                   example: 200
       '404':
-        description: Post not found
+        description: Post, Comment, or Reply not found
         content:
           application/json:
             schema:
@@ -147,41 +171,38 @@
 
   patch:
     tags:
-      - Posts
-    summary: Update a post
+      - Replies
+    summary: Update a reply in a specific comment
     security:
       - bearerAuth: []
     parameters:
-      - name: id
+      - name: postId
         in: path
         required: true
         schema:
           type: string
-          minLength: 24
+          format: uuid
+      - name: commentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: replyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
     requestBody:
       required: true
       content:
-        multipart/form-data:
-          schema:
-            type: object
-            properties:
-              title:
-                type: string
-                description: Post title
-              content:
-                type: string
-                description: Post content
-              image:
-                type: string
-                format: binary
-                description: Optional image file
         application/json:
           schema:
-            $ref: '#/components/schemas/UpdatePost'
-
+            $ref: '#/components/schemas/UpdateReply'
     responses:
       '200':
-        description: Post updated successfully
+        description: Reply updated successfully
         content:
           application/json:
             schema:
@@ -197,12 +218,12 @@
                   example: true
                 message:
                   type: string
-                  example: 'Post successfully updated'
+                  example: 'Reply successfully updated'
                 status:
                   type: integer
                   example: 200
       '404':
-        description: Post not found
+        description: Reply not found
         content:
           application/json:
             schema:
@@ -216,20 +237,32 @@
 
   delete:
     tags:
-      - Posts
-    summary: Delete a post
+      - Replies
+    summary: Delete a reply from a specific comment
     security:
       - bearerAuth: []
     parameters:
-      - name: id
+      - name: postId
         in: path
         required: true
         schema:
           type: string
-          minLength: 24
+          format: uuid
+      - name: commentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: replyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
     responses:
       '200':
-        description: Post deleted successfully
+        description: Reply deleted successfully
         content:
           application/json:
             schema:
@@ -243,12 +276,12 @@
                   example: true
                 message:
                   type: string
-                  example: 'Post successfully deleted'
+                  example: 'Reply successfully deleted'
                 status:
                   type: integer
                   example: 200
       '404':
-        description: Post not found
+        description: Reply not found
         content:
           application/json:
             schema:

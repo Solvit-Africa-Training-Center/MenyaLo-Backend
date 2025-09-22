@@ -43,4 +43,3 @@ const options = {
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
-

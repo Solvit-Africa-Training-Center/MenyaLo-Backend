@@ -10,7 +10,7 @@ import {
   deleteDocumentById,
   getQueryHistory,
 } from './controller';
-import { infoLogger } from '../../../utils/logger'; 
+import { infoLogger } from '../../../utils/logger';
 
 const chatbotRouter = Router();
 

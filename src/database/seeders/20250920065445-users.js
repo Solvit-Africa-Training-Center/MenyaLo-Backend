@@ -22,7 +22,7 @@ module.exports = {
     });
 
     const getRoleId = (roleName) => {
-      const role = roles.find(r => r.name === roleName);
+      const role = roles.find((r) => r.name === roleName);
       return role ? role.id : null;
     };
 

@@ -2,14 +2,14 @@ import { Router } from 'express';
 import { authMiddleware } from '../../../middleware/unifiedAuthMiddleware';
 import { ValidationMiddleware } from '../../../middleware/validationMiddleware';
 import { ProfileController } from './controller';
-import { 
-  createCitizenProfileSchema, 
-  createOrganizationProfileSchema, 
+import {
+  createCitizenProfileSchema,
+  createOrganizationProfileSchema,
   createLawFirmProfileSchema,
   updateCitizenProfileSchema,
   updateOrganizationProfileSchema,
   updateLawFirmProfileSchema,
-  IdValidationSchema, 
+  IdValidationSchema,
 } from './validators';
 import { upload } from '../../../utils/upload';
 
