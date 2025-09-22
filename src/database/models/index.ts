@@ -7,6 +7,13 @@ import { Subscriber, SubscriberModel } from './Subscriber';
 import { Post, PostModel } from './Post';
 import { Comment, CommentModel } from './Comment';
 import { Reply, ReplyModel } from './Reply';
+import { Upvote, UpvoteModel } from './Upvote';
+import { Domain, DomainModel } from './Domain';
+import { Origin, OriginModel } from './Origin';
+import { Specialty, SpecialtyModel } from './Specialty';
+import { DomainPreference, DomainPreferenceModel } from './DomainPreference';
+import { Law, LawModel } from './Law';
+import { Article, ArticleModel } from './Article';
 
 interface Models {
   Role: typeof Role;
@@ -17,6 +24,13 @@ interface Models {
   Post: typeof Post;
   Comment: typeof Comment;
   Reply: typeof Reply;
+  Upvote: typeof Upvote;
+  Domain: typeof Domain;
+  Origin: typeof Origin;
+  Specialty: typeof Specialty;
+  DomainPreference: typeof DomainPreference;
+  Law: typeof Law;
+  Article: typeof Article;
 }
 
 export const AllModels = (sequelize: Sequelize): Models => ({
@@ -28,4 +42,11 @@ export const AllModels = (sequelize: Sequelize): Models => ({
   Post: PostModel(sequelize),
   Comment: CommentModel(sequelize),
   Reply: ReplyModel(sequelize),
+  Upvote: UpvoteModel(sequelize),
+  Domain: DomainModel(sequelize),
+  Origin: OriginModel(sequelize),
+  Specialty: SpecialtyModel(sequelize),
+  DomainPreference: DomainPreferenceModel(sequelize),
+  Law: LawModel(sequelize),
+  Article: ArticleModel(sequelize),
 });

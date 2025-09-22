@@ -3,7 +3,7 @@ import { Database } from '../../../database';
 import { ResponseService } from '../../../utils/response';
 import { CreatePostInterface, GetAllPosts, PostInterface, UpdatePostInterface } from './posts';
 import { generateSlug } from '../../../utils/helper';
-import { uploadFile } from '../../../utils/upload';
+import { uploadToCloudinary } from '../../../utils/upload';
 
 export class PostService {
   data: PostInterface | CreatePostInterface | UpdatePostInterface;
@@ -26,13 +26,13 @@ export class PostService {
     this.res = res;
   }
 
-  private async postExist(): Promise<{ exists: boolean; post?: PostInterface; error?: unknown }> {
+  private async postExist(): Promise<{ exists: boolean; error?: unknown }> {
     try {
       const post = await Database.Post.findOne({ where: { id: this.dataId }, raw: true });
       if (!post) {
         return { exists: false };
       } else {
-        return { exists: true, post };
+        return { exists: true };
       }
     } catch (error) {
       return { exists: false, error };
@@ -55,7 +55,7 @@ export class PostService {
 
       if (this.file) {
         try {
-          image_url = await uploadFile(this.file as Express.Multer.File);
+          image_url = await uploadToCloudinary(this.file as Express.Multer.File);
         } catch (error) {
           const { message, stack } = error as Error;
           return ResponseService({
@@ -106,6 +106,10 @@ export class PostService {
             attributes: ['id', 'name', 'username'],
           },
           {
+            model: Database.Upvote,
+            as: 'upvotes',
+          },
+          {
             model: Database.Comment,
             as: 'comments',
             attributes: ['id', 'authorId', 'content'],
@@ -114,6 +118,11 @@ export class PostService {
                 model: Database.User,
                 as: 'author',
                 attributes: ['id', 'name', 'username'],
+              },
+              {
+                model: Database.Reply,
+                as: 'replies',
+                attributes: ['id', 'authorId', 'content'],
               },
             ],
           },
@@ -237,7 +246,7 @@ export class PostService {
 
       if (this.file) {
         try {
-          image_url = await uploadFile(this.file as Express.Multer.File);
+          image_url = await uploadToCloudinary(this.file as Express.Multer.File);
         } catch (error) {
           const { message, stack } = error as Error;
           return ResponseService({
