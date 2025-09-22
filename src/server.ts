@@ -1,4 +1,3 @@
-
 import { createServer } from './app';
 import { Database } from './database';
 import { errorLogger, logStartup } from './utils/logger';
