@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import pdf from 'pdf-parse';
 import { Database } from '../../../database';
-import { getEmbedding, generateAnswer } from './ollamaService';
+import { getEmbedding, generateAnswer } from './AIservice';
 import { chunkText } from '../../../utils/chunker';
 import { infoLogger, errorLogger } from '../../../utils/logger';
 import { QueryTypes } from 'sequelize';

@@ -1,5 +1,5 @@
 import { Database } from '../../../database';
-import { getEmbedding, generateAnswer } from './ollamaService';
+import { getEmbedding, generateAnswer } from './AIservice';
 import { QueryTypes } from 'sequelize';
 
 // Format embedding for Postgres vector

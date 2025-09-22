@@ -15,7 +15,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node src/server",
     "build": "tsc",
     "dev": "nodemon",
     "test": "jest",
@@ -85,6 +85,7 @@
     "typescript-eslint": "^8.41.0"
   },
   "dependencies": {
+    "@xenova/transformers": "^2.17.2",
     "bcrypt": "^6.0.0",
     "bull": "^4.16.5",
     "cloudinary": "^2.7.0",

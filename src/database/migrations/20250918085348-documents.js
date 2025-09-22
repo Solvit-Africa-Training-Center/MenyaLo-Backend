@@ -23,7 +23,7 @@ export async function up(queryInterface, Sequelize) {
       allowNull: false,
     },
     embedding: {
-      type: 'vector(768)', // Sequelize doesn't have vector type, raw SQL type is fine
+      type: 'vector(384)', // Sequelize doesn't have vector type, raw SQL type is fine
       allowNull: false,
     },
     created_at: {
