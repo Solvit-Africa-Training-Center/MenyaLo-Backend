@@ -15,7 +15,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server",
+    "start": "node dist/src/server.js",
     "build": "tsc",
     "dev": "nodemon",
     "test": "jest",
