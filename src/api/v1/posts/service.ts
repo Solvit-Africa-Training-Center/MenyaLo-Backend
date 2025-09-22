@@ -13,7 +13,7 @@ export class PostService {
   res: Response;
 
   constructor(
-    data: PostInterface,
+    data: PostInterface | CreatePostInterface | UpdatePostInterface,
     userId: string,
     dataId: string,
     file: Express.Multer.File,
@@ -248,10 +248,15 @@ export class PostService {
           });
         }
       }
+      const updateData: UpdatePostInterface = { ...this.data };
+      if (image_url){
+        updateData.image_url = image_url;
+      }
+
       const updatedPost = await Database.Post.update(
         {
-          ...(this.data as UpdatePostInterface),
-          image_url: image_url as string,
+          ...updateData,
+          slug: generateSlug(updateData.title as string),
           authorId: this.userId,
           updatedAt: new Date(),
         },

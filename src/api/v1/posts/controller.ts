@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { PostService } from './service';
-import { PostRequestInterface } from './posts';
+import { PostRequestInterface, UpdatePostRequestInterface } from './posts';
 
 export class PostController {
   public async createPost(req: PostRequestInterface, res: Response): Promise<void> {
@@ -38,7 +38,7 @@ export class PostController {
       throw error as Error;
     }
   }
-  public async updatePost(req: PostRequestInterface, res: Response): Promise<void> {
+  public async updatePost(req: UpdatePostRequestInterface, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const user = req?.user?.id as string;

@@ -17,10 +17,18 @@ type CreatePostInterface = Omit<PostInterface, 'id' | 'deletedAt'>;
 type UpdatePostInterface = Partial<Omit<PostInterface, 'id' | 'createdAt'>>;
 
 interface PostRequestInterface extends IRequestUser {
-  body: PostInterface;
+  body: CreatePostInterface;
   params: {
     id: string;
   };
+  file?:Express.Multer.File;
+}
+interface UpdatePostRequestInterface extends IRequestUser {
+  body: UpdatePostInterface;
+  params: {
+    id: string;
+  };
+  file?:Express.Multer.File;
 }
 
 interface GetAllPosts {
