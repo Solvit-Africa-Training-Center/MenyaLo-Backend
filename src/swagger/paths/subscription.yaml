@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 /subscribers:
   get:
     summary: Get all subscribers
@@ -18,9 +18,7 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
-=======
-/subscribe:
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
+
   post:
     summary: Subscribe to newsletter
     description: Allows a user to subscribe using their email address.
@@ -30,12 +28,12 @@
       content:
         application/json:
           schema:
-<<<<<<< HEAD
             type: object
             required:
               - email
-=======
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
+            type: object
+            required:
+              - email
             $ref: '#/components/schemas/Subscribe'
     responses:
       200:
@@ -55,11 +53,8 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
-<<<<<<< HEAD
+
 /subscribers/unsubscribe:
-=======
-/unsubscribe:
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
   get:
     summary: Unsubscribe from newsletter
     description: Unsubscribes a user using a secure token sent via email.
@@ -82,8 +77,6 @@
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
-<<<<<<< HEAD
-=======
 
 /subscribers:
   get:
@@ -103,4 +96,4 @@
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
+

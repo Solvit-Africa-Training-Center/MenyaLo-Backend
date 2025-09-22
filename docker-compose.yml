@@ -13,6 +13,11 @@ services:
     volumes:
       - ./:/usr/src/app/
       - node_modules:/usr/src/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     command: >
       sh -c "
       npm run db:migrate && 

@@ -20,11 +20,7 @@
                   example: true
                 message:
                   type: string
-<<<<<<< HEAD
-                  example: 'Posts successfully retrieved'
-=======
                   example: "Posts successfully retrieved"
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
                 status:
                   type: integer
                   example: 200
@@ -53,12 +49,6 @@
         multipart/form-data:
           schema:
             type: object
-<<<<<<< HEAD
-=======
-            required:
-              - title
-              - content
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
             properties:
               title:
                 type: string
@@ -88,11 +78,7 @@
                   example: true
                 message:
                   type: string
-<<<<<<< HEAD
                   example: 'Post successfully created'
-=======
-                  example: "Post successfully created"
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
                 status:
                   type: integer
                   example: 201
@@ -142,11 +128,7 @@
                   example: true
                 message:
                   type: string
-<<<<<<< HEAD
                   example: 'Post successfully retrieved'
-=======
-                  example: "Post successfully retrieved"
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
                 status:
                   type: integer
                   example: 200
@@ -181,7 +163,6 @@
       content:
         multipart/form-data:
           schema:
-<<<<<<< HEAD
             type: object
             properties:
               title:
@@ -197,23 +178,7 @@
         application/json:
           schema:
             $ref: '#/components/schemas/UpdatePost'
-=======
-              type: object
-              properties:
-                title:
-                  type: string
-                  description: Post title
-                content:
-                  type: string
-                  description: Post content
-                image:
-                  type: string
-                  format: binary
-                  description: Optional image file
-        application/json:                  
-            schema:
-              $ref: '#/components/schemas/UpdatePost'
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
+
     responses:
       '200':
         description: Post updated successfully
@@ -232,11 +197,7 @@
                   example: true
                 message:
                   type: string
-<<<<<<< HEAD
                   example: 'Post successfully updated'
-=======
-                  example: "Post successfully updated"
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
                 status:
                   type: integer
                   example: 200
@@ -282,11 +243,7 @@
                   example: true
                 message:
                   type: string
-<<<<<<< HEAD
                   example: 'Post successfully deleted'
-=======
-                  example: "Post successfully deleted"
->>>>>>> a0deaba (Initial MenyaLo backend setup:)
                 status:
                   type: integer
                   example: 200
@@ -301,8 +258,4 @@
         content:
           application/json:
             schema:
-<<<<<<< HEAD
               $ref: '#/components/schemas/ErrorResponse'
-=======
-              $ref: '#/components/schemas/ErrorResponse'
->>>>>>> a0deaba (Initial MenyaLo backend setup:)

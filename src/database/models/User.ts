@@ -5,7 +5,6 @@ import { Rating } from './Rating';
 import { Post } from './Post';
 import { Comment } from './Comment';
 
-
 interface UserAttributes {
   id: string;
   username?: string;
