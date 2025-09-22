@@ -1,5 +1,33 @@
 components:
   schemas:
+    SocialLinks:
+      type: object
+      properties:
+        linkedin:
+          type: string
+          format: uri
+          example: https://linkedin.com/in/johndoe
+        twitter:
+          type: string
+          format: uri
+          example: https://twitter.com/johndoe
+        github:
+          type: string
+          format: uri
+          example: https://github.com/johndoe
+        facebook:
+          type: string
+          format: uri
+          example: https://facebook.com/johndoe
+        instagram:
+          type: string
+          format: uri
+          example: https://instagram.com/johndoe
+        website:
+          type: string
+          format: uri
+          example: https://johndoe.com
+
     Profile:
       type: object
       properties:
@@ -11,7 +39,7 @@ components:
           format: uuid
         userRole:
           type: string
-          enum: ['citizen', 'organization', 'law-firm']
+          enum: [citizen, organization, law-firm]
         name:
           type: string
         bio:
@@ -22,13 +50,17 @@ components:
           nullable: true
         imageUrl:
           type: string
+          format: uri
           nullable: true
         website:
           type: string
+          format: uri
           nullable: true
         phoneNumber:
           type: string
           nullable: true
+        socials:
+          $ref: '#/components/schemas/SocialLinks'
         teamSize:
           type: integer
           nullable: true
@@ -40,6 +72,7 @@ components:
           nullable: true
         successRate:
           type: number
+          format: float
           nullable: true
         establishedAt:
           type: string
@@ -51,10 +84,6 @@ components:
         updatedAt:
           type: string
           format: date-time
-        deletedAt:
-          type: string
-          format: date-time
-          nullable: true
 
     UserProfile:
       type: object
@@ -74,6 +103,15 @@ components:
         role:
           $ref: '#/components/schemas/Role'
 
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+
     ProfileWithUser:
       allOf:
         - $ref: '#/components/schemas/Profile'
@@ -82,57 +120,6 @@ components:
             user:
               $ref: '#/components/schemas/UserProfile'
 
-    CitizenProfileWithUser:
-      allOf:
-        - $ref: '#/components/schemas/Profile'
-        - type: object
-          properties:
-            user:
-              type: object
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                email:
-                  type: string
-                  format: email
-                username:
-                  type: string
-
-    OrganizationProfileWithUser:
-      allOf:
-        - $ref: '#/components/schemas/Profile'
-        - type: object
-          properties:
-            user:
-              type: object
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                email:
-                  type: string
-                  format: email
-                address:
-                  type: string
-
-    LawFirmProfileWithUser:
-      allOf:
-        - $ref: '#/components/schemas/Profile'
-        - type: object
-          properties:
-            user:
-              type: object
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                email:
-                  type: string
-                  format: email
-                address:
-                  type: string
-
     CreateCitizenProfile:
       type: object
       required:
@@ -140,20 +127,20 @@ components:
       properties:
         name:
           type: string
-          description: Citizen's full name
+          minLength: 2
+          maxLength: 255
         occupation:
           type: string
-          description: Citizen's occupation
+          maxLength: 255
         bio:
           type: string
-          description: Citizen's biography
+          maxLength: 5000
         phoneNumber:
           type: string
-          description: Citizen's phone number
-        imageUrl:
-          type: string
-          format: uri
-          description: Profile image URL
+          pattern: '^\+?[\d\s\-()]+$'
+          maxLength: 20
+        socials:
+          $ref: '#/components/schemas/SocialLinks'
 
     CreateOrganizationProfile:
       type: object
@@ -162,33 +149,30 @@ components:
       properties:
         name:
           type: string
-          description: Organization name
-        imageUrl:
-          type: string
-          format: uri
-          description: Organization logo URL
+          minLength: 2
+          maxLength: 255
         bio:
           type: string
-          description: Organization description
+          maxLength: 5000
         website:
           type: string
           format: uri
-          description: Organization website
         phoneNumber:
           type: string
-          description: Organization phone number
+          pattern: '^\+?[\d\s\-()]+$'
+          maxLength: 20
+        socials:
+          $ref: '#/components/schemas/SocialLinks'
         teamSize:
           type: integer
           minimum: 1
-          description: Number of team members
         yearsOfExperience:
           type: integer
           minimum: 0
-          description: Years of experience
+          maximum: 200
         establishedAt:
           type: string
           format: date
-          description: Date established
 
     CreateLawFirmProfile:
       type: object
@@ -197,134 +181,153 @@ components:
       properties:
         name:
           type: string
-          description: Law firm name
-        imageUrl:
-          type: string
-          format: uri
-          description: Law firm logo URL
+          minLength: 2
+          maxLength: 255
         bio:
           type: string
-          description: Law firm description
+          maxLength: 5000
         website:
           type: string
           format: uri
-          description: Law firm website
         phoneNumber:
           type: string
-          description: Law firm phone number
+          pattern: '^\+?[\d\s\-()]+$'
+          maxLength: 20
+        socials:
+          $ref: '#/components/schemas/SocialLinks'
         teamSize:
           type: integer
           minimum: 1
-          description: Number of lawyers
         yearsOfExperience:
           type: integer
           minimum: 0
-          description: Years of experience
+          maximum: 200
         caseResolved:
           type: integer
           minimum: 0
-          description: Number of cases resolved
         successRate:
           type: number
+          format: float
           minimum: 0
           maximum: 100
-          description: Success rate percentage
         establishedAt:
           type: string
           format: date
-          description: Date established
 
     UpdateCitizenProfile:
       type: object
       properties:
         name:
           type: string
-          description: Citizen's full name
+          minLength: 2
+          maxLength: 255
         occupation:
           type: string
-          description: Citizen's occupation
+          maxLength: 255
         bio:
           type: string
-          description: Citizen's biography
+          maxLength: 5000
         phoneNumber:
           type: string
-          description: Citizen's phone number
-        imageUrl:
-          type: string
-          format: uri
-          description: Profile image URL
+          pattern: '^\+?[\d\s\-()]+$'
+          maxLength: 20
+        socials:
+          $ref: '#/components/schemas/SocialLinks'
 
     UpdateOrganizationProfile:
       type: object
       properties:
         name:
           type: string
-          description: Organization name
-        imageUrl:
-          type: string
-          format: uri
-          description: Organization logo URL
+          minLength: 2
+          maxLength: 255
         bio:
           type: string
-          description: Organization description
+          maxLength: 5000
         website:
           type: string
           format: uri
-          description: Organization website
         phoneNumber:
           type: string
-          description: Organization phone number
+          pattern: '^\+?[\d\s\-()]+$'
+          maxLength: 20
+        socials:
+          $ref: '#/components/schemas/SocialLinks'
         teamSize:
           type: integer
           minimum: 1
-          description: Number of team members
         yearsOfExperience:
           type: integer
           minimum: 0
-          description: Years of experience
+          maximum: 200
         establishedAt:
           type: string
           format: date
-          description: Date established
 
     UpdateLawFirmProfile:
       type: object
       properties:
         name:
           type: string
-          description: Law firm name
-        imageUrl:
-          type: string
-          format: uri
-          description: Law firm logo URL
+          minLength: 2
+          maxLength: 255
         bio:
           type: string
-          description: Law firm description
+          maxLength: 5000
         website:
           type: string
           format: uri
-          description: Organization website
         phoneNumber:
           type: string
-          description: Law firm phone number
+          pattern: '^\+?[\d\s\-()]+$'
+          maxLength: 20
+        socials:
+          $ref: '#/components/schemas/SocialLinks'
         teamSize:
           type: integer
           minimum: 1
-          description: Number of lawyers
         yearsOfExperience:
           type: integer
           minimum: 0
-          description: Years of experience
+          maximum: 200
         caseResolved:
           type: integer
           minimum: 0
-          description: Number of cases resolved
         successRate:
           type: number
+          format: float
           minimum: 0
           maximum: 100
-          description: Success rate percentage
         establishedAt:
           type: string
           format: date
-          description: Date established
+
+    ImageUploadResponse:
+      type: object
+      properties:
+        imageUrl:
+          type: string
+          format: uri
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+        data:
+          type: object
+          nullable: true
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+        data:
+          type: object

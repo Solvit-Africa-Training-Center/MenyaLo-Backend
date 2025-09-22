@@ -1,7 +1,12 @@
 import { Response } from 'express';
 import { Database } from '../../../database';
 import { ResponseService } from '../../../utils/response';
-import { CreateRatingInterface, GetAllRatings, RatingInterface, UpdateRatingInterface } from './ratings';
+import {
+  CreateRatingInterface,
+  GetAllRatings,
+  RatingInterface,
+  UpdateRatingInterface,
+} from './ratings';
 
 export class RatingService {
   data: RatingInterface | CreateRatingInterface | UpdateRatingInterface;
@@ -51,7 +56,7 @@ export class RatingService {
       }
 
       const { star, review, firmId } = this.data as CreateRatingInterface;
-      
+
       // Check if firm/profile exists
       const firm = await Database.Profile.findOne({ where: { id: firmId }, raw: true });
       if (!firm) {
@@ -65,9 +70,9 @@ export class RatingService {
       }
 
       // Check if user already rated this firm
-      const existingRating = await Database.Rating.findOne({ 
+      const existingRating = await Database.Rating.findOne({
         where: { userId: this.userId, firmId },
-        raw: true, 
+        raw: true,
       });
       if (existingRating) {
         return ResponseService({

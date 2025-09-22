@@ -1,6 +1,7 @@
 import { createServer } from './app';
 import { Database } from './database';
 import { errorLogger, logStartup } from './utils/logger';
+import { initCronJobs } from './services/cron';
 import { config } from 'dotenv';
 config();
 
@@ -12,6 +13,7 @@ Database.database
   .authenticate()
   .then(async () => {
     try {
+      initCronJobs();
       server.listen(port, '0.0.0.0', () => {
         logStartup(port, env);
       });

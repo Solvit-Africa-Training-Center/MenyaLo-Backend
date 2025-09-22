@@ -1,96 +1,102 @@
 import { IRequestUser } from '../../../middleware/unifiedAuthMiddleware';
 
-interface ProfileInterface {
+export interface SocialLinks {
+  linkedin?: string;
+  twitter?: string;
+  github?: string;
+  facebook?: string;
+  instagram?: string;
+  website?: string;
+}
+
+export interface ProfileInterface {
   id: string;
   userId: string;
-  userRole: string;
+  userRole: 'citizen' | 'organization' | 'law-firm';
   name: string;
   bio?: string;
   occupation?: string;
   imageUrl?: string;
   website?: string;
   phoneNumber?: string;
+  socials?: SocialLinks;
   teamSize?: number;
   yearsOfExperience?: number;
   caseResolved?: number;
   successRate?: number;
   establishedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date | null;
 }
 
-type CreateCitizenProfileInterface = {
+export interface CreateCitizenProfile {
   name: string;
   occupation?: string;
   bio?: string;
   phoneNumber?: string;
-  imageUrl?: string;
-};
+  socials?: SocialLinks;
+}
 
-type CreateOrganizationProfileInterface = {
+export interface CreateOrganizationProfile {
   name: string;
-  imageUrl?: string;
   bio?: string;
   website?: string;
   phoneNumber?: string;
+  socials?: SocialLinks;
   teamSize?: number;
   yearsOfExperience?: number;
   establishedAt?: Date;
-};
+}
 
-type CreateLawFirmProfileInterface = {
+export interface CreateLawFirmProfile {
   name: string;
-  imageUrl?: string;
   bio?: string;
   website?: string;
   phoneNumber?: string;
+  socials?: SocialLinks;
   teamSize?: number;
   yearsOfExperience?: number;
   caseResolved?: number;
   successRate?: number;
   establishedAt?: Date;
-};
-
-type CreateProfileInterface = CreateCitizenProfileInterface | CreateOrganizationProfileInterface | CreateLawFirmProfileInterface;
-
-type UpdateCitizenProfileInterface = Partial<CreateCitizenProfileInterface>;
-type UpdateOrganizationProfileInterface = Partial<CreateOrganizationProfileInterface>;
-type UpdateLawFirmProfileInterface = Partial<CreateLawFirmProfileInterface>;
-
-type UpdateProfileInterface = UpdateCitizenProfileInterface | UpdateOrganizationProfileInterface | UpdateLawFirmProfileInterface;
-
-interface GetAllProfiles {
-  profiles: ProfileInterface[];
 }
 
-interface ProfileRequestInterface extends IRequestUser {
-  body: CreateProfileInterface;
+export type CreateProfileInterface =
+  | CreateCitizenProfile
+  | CreateOrganizationProfile
+  | CreateLawFirmProfile;
+
+export type UpdateCitizenProfile = Partial<CreateCitizenProfile>;
+export type UpdateOrganizationProfile = Partial<CreateOrganizationProfile>;
+export type UpdateLawFirmProfile = Partial<CreateLawFirmProfile>;
+
+export type UpdateProfileInterface =
+  | UpdateCitizenProfile
+  | UpdateOrganizationProfile
+  | UpdateLawFirmProfile;
+
+export interface ProfileRequestInterface extends IRequestUser {
+  body: CreateProfile;
+  params: {
+    id?: string;
+  };
+}
+
+export interface UpdateProfileRequestInterface extends IRequestUser {
+  body: UpdateProfile;
   params: {
     id: string;
   };
-  file?: Express.Multer.File;
 }
 
-interface UpdateProfileRequestInterface extends IRequestUser {
-  body: UpdateProfileInterface;
+export interface ImageUploadRequest extends IRequestUser {
+  file?: Express.Multer.File;
   params: {
     id: string;
   };
-  file?: Express.Multer.File;
 }
 
-export {
-  ProfileInterface,
-  CreateCitizenProfileInterface,
-  CreateOrganizationProfileInterface,
-  CreateLawFirmProfileInterface,
-  CreateProfileInterface,
-  UpdateCitizenProfileInterface,
-  UpdateOrganizationProfileInterface,
-  UpdateLawFirmProfileInterface,
-  UpdateProfileInterface,
-  GetAllProfiles,
-  ProfileRequestInterface,
-  UpdateProfileRequestInterface,
-};
+export interface GetAllProfiles{
+  profiles:ProfileInterface[];
+}

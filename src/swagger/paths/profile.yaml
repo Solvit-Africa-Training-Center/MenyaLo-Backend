@@ -1,135 +1,133 @@
-# Profile API Paths
 /profiles:
   get:
     tags:
       - Profiles
     summary: List all profiles
-    description: Retrieve a paginated list of all profiles with optional filtering
+    description: Retrieve all profiles (public access)
     operationId: listProfiles
-    parameters:
-      - name: page
-        in: query
-        description: Page number for pagination
-        required: false
-        schema:
-          type: integer
-          default: 1
-          minimum: 1
-      - name: limit
-        in: query
-        description: Number of items per page
-        required: false
-        schema:
-          type: integer
-          default: 20
-          minimum: 1
-          maximum: 100
-      - name: type
-        in: query
-        description: Filter by profile type
-        required: false
-        schema:
-          type: string
-          enum: [citizen, organization, law-firm]
-      - name: status
-        in: query
-        description: Filter by profile status
-        required: false
-        schema:
-          type: string
-          enum: [active, inactive, pending, suspended]
     responses:
       '200':
-        description: Successfully retrieved profiles list
+        description: Successfully retrieved profiles
         content:
           application/json:
             schema:
               type: object
               properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
                 data:
                   type: array
                   items:
-                    $ref: '#/components/schemas/ProfileSummary'
-                pagination:
-                  $ref: '#/components/schemas/Pagination'
-      '400':
-        description: Bad request - Invalid parameters
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        description: Unauthorized - Authentication required
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
+                    $ref: '#/components/schemas/ProfileWithUser'
       '500':
         description: Internal server error
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
 
-  post:
+/profiles/citizens:
+  get:
     tags:
       - Profiles
-    summary: Create a new profile
-    description: Create a new profile for a user
-    operationId: createProfile
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateProfileRequest'
+    summary: List citizen profiles
+    description: Retrieve all citizen profiles (public access)
+    operationId: listCitizenProfiles
     responses:
-      '201':
-        description: Profile created successfully
+      '200':
+        description: Successfully retrieved citizen profiles
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Profile'
-      '400':
-        description: Bad request - Invalid input data
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        description: Unauthorized - Authentication required
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '409':
-        description: Conflict - Profile already exists
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProfileWithUser'
       '500':
         description: Internal server error
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
+
+/profiles/organizations:
+  get:
+    tags:
+      - Profiles
+    summary: List organization profiles
+    description: Retrieve all organization profiles (public access)
+    operationId: listOrganizationProfiles
+    responses:
+      '200':
+        description: Successfully retrieved organization profiles
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProfileWithUser'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/profiles/law-firms:
+  get:
+    tags:
+      - Profiles
+    summary: List law firm profiles
+    description: Retrieve all law firm profiles (public access)
+    operationId: listLawFirmProfiles
+    responses:
+      '200':
+        description: Successfully retrieved law firm profiles
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProfileWithUser'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
 
 /profiles/{id}:
   get:
     tags:
       - Profiles
     summary: Get profile by ID
-    description: Retrieve a specific profile by its ID
+    description: Retrieve a specific profile by ID (public access)
     operationId: getProfileById
     parameters:
       - name: id
         in: path
-        description: Profile ID
         required: true
         schema:
           type: string
@@ -140,9 +138,55 @@
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Profile'
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  $ref: '#/components/schemas/ProfileWithUser'
+      '404':
+        description: Profile not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  delete:
+    tags:
+      - Profiles
+    summary: Delete profile
+    description: Delete a profile (requires authentication and ownership). User ID and role are extracted from JWT token.
+    operationId: deleteProfile
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Profile deleted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuccessResponse'
       '401':
         description: Unauthorized - Authentication required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '403':
+        description: Forbidden - Not the profile owner
         content:
           application/json:
             schema:
@@ -162,35 +206,35 @@
     security:
       - bearerAuth: []
 
-  patch:
+/profiles/citizen:
+  post:
     tags:
-      - Profiles
-    summary: Update profile
-    description: Update an existing profile
-    operationId: updateProfile
-    parameters:
-      - name: id
-        in: path
-        description: Profile ID
-        required: true
-        schema:
-          type: string
-          format: uuid
+      - Citizen Profiles
+    summary: Create citizen profile
+    description: Create a new citizen profile. User ID and role are automatically extracted from JWT token, not from request body.
+    operationId: createCitizenProfile
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/UpdateProfileRequest'
+            $ref: '#/components/schemas/CreateCitizenProfile'
     responses:
-      '200':
-        description: Profile updated successfully
+      '201':
+        description: Citizen profile created successfully
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Profile'
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  $ref: '#/components/schemas/Profile'
       '400':
-        description: Bad request - Invalid input data
+        description: Bad request - Invalid input
         content:
           application/json:
             schema:
@@ -202,7 +246,214 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
       '403':
-        description: Forbidden - Insufficient permissions
+        description: Forbidden - Not the profile owner
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Profile not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+    security:
+      - bearerAuth: []
+
+/profiles/{id}/organization:
+  patch:
+    tags:
+      - Organization Profiles
+    summary: Update organization profile
+    description: Update an existing organization profile. User ID and role are automatically extracted from JWT token. Only the profile owner can update.
+    operationId: updateOrganizationProfile
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateOrganizationProfile'
+    responses:
+      '200':
+        description: Organization profile updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  $ref: '#/components/schemas/ProfileWithUser'
+      '400':
+        description: Bad request - Invalid input
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized - Authentication required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '403':
+        description: Forbidden - Not the profile owner
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Profile not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+    security:
+      - bearerAuth: []
+
+/profiles/{id}/law-firm:
+  patch:
+    tags:
+      - Law Firm Profiles
+    summary: Update law firm profile
+    description: Update an existing law firm profile. User ID and role are automatically extracted from JWT token. Only the profile owner can update.
+    operationId: updateLawFirmProfile
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateLawFirmProfile'
+    responses:
+      '200':
+        description: Law firm profile updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  $ref: '#/components/schemas/ProfileWithUser'
+      '400':
+        description: Bad request - Invalid input
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized - Authentication required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '403':
+        description: Forbidden - Not the profile owner
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Profile not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+    security:
+      - bearerAuth: []
+
+/profiles/{id}/image:
+  post:
+    tags:
+      - Profile Images
+    summary: Upload profile image
+    description: Upload or update a profile image/logo. This is a separate endpoint using multipart/form-data to avoid parsing issues with JSON fields like socials.
+    operationId: uploadProfileImage
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - image
+            properties:
+              image:
+                type: string
+                format: binary
+    responses:
+      '200':
+        description: Profile image uploaded successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  $ref: '#/components/schemas/ImageUploadResponse'
+      '400':
+        description: Bad request - No image file provided
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized - Authentication required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '403':
+        description: Forbidden - Not the profile owner
         content:
           application/json:
             schema:
@@ -224,21 +475,24 @@
 
   delete:
     tags:
-      - Profiles
-    summary: Delete profile
-    description: Delete a profile by ID
-    operationId: deleteProfile
+      - Profile Images
+    summary: Delete profile image
+    description: Remove the profile image/logo
+    operationId: deleteProfileImage
     parameters:
       - name: id
         in: path
-        description: Profile ID
         required: true
         schema:
           type: string
           format: uuid
     responses:
-      '204':
-        description: Profile deleted successfully
+      '200':
+        description: Profile image deleted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuccessResponse'
       '401':
         description: Unauthorized - Authentication required
         content:
@@ -246,7 +500,7 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
       '403':
-        description: Forbidden - Insufficient permissions
+        description: Forbidden - Not the profile owner
         content:
           application/json:
             schema:
@@ -266,46 +520,47 @@
     security:
       - bearerAuth: []
 
-# Citizen Profile Endpoints
-/profiles/citizens:
-  get:
+/profiles/organization:
+  post:
     tags:
-      - Citizen Profiles
-    summary: List citizen profiles
-    description: Retrieve a list of citizen profiles
-    operationId: listCitizenProfiles
-    parameters:
-      - name: page
-        in: query
-        schema:
-          type: integer
-          default: 1
-      - name: limit
-        in: query
-        schema:
-          type: integer
-          default: 20
-      - name: search
-        in: query
-        description: Search by name or ID number
-        schema:
-          type: string
+      - Organization Profiles
+    summary: Create organization profile
+    description: Create a new organization profile. User ID and role are automatically extracted from JWT token, not from request body.
+    operationId: createOrganizationProfile
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateOrganizationProfile'
     responses:
-      '200':
-        description: Successfully retrieved citizen profiles
+      '201':
+        description: Organization profile created successfully
         content:
           application/json:
             schema:
               type: object
               properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
                 data:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/CitizenProfile'
-                pagination:
-                  $ref: '#/components/schemas/Pagination'
+                  $ref: '#/components/schemas/Profile'
+      '400':
+        description: Bad request - Invalid input
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
       '401':
-        description: Unauthorized
+        description: Unauthorized - Authentication required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '409':
+        description: Conflict - Profile already exists
         content:
           application/json:
             schema:
@@ -319,34 +574,41 @@
     security:
       - bearerAuth: []
 
-/profiles/citizen:
+/profiles/law-firm:
   post:
     tags:
-      - Citizen Profiles
-    summary: Create citizen profile
-    description: Create a new citizen profile
-    operationId: createCitizenProfile
+      - Law Firm Profiles
+    summary: Create law firm profile
+    description: Create a new law firm profile. User ID and role are automatically extracted from JWT token, not from request body.
+    operationId: createLawFirmProfile
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CreateCitizenProfileRequest'
+            $ref: '#/components/schemas/CreateLawFirmProfile'
     responses:
       '201':
-        description: Citizen profile created successfully
+        description: Law firm profile created successfully
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CitizenProfile'
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                data:
+                  $ref: '#/components/schemas/Profile'
       '400':
-        description: Bad request - Invalid input data
+        description: Bad request - Invalid input
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
       '401':
-        description: Unauthorized
+        description: Unauthorized - Authentication required
         content:
           application/json:
             schema:
@@ -367,52 +629,11 @@
       - bearerAuth: []
 
 /profiles/{id}/citizen:
-  get:
-    tags:
-      - Citizen Profiles
-    summary: Get citizen profile details
-    description: Retrieve detailed citizen profile information
-    operationId: getCitizenProfile
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      '200':
-        description: Successfully retrieved citizen profile
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CitizenProfile'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '404':
-        description: Citizen profile not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
   patch:
     tags:
       - Citizen Profiles
     summary: Update citizen profile
-    description: Update existing citizen profile information
+    description: Update an existing citizen profile. User ID and role are automatically extracted from JWT token. Only the profile owner can update.
     operationId: updateCitizenProfile
     parameters:
       - name: id
@@ -426,586 +647,30 @@
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/UpdateCitizenProfileRequest'
+            $ref: '#/components/schemas/UpdateCitizenProfile'
     responses:
       '200':
         description: Citizen profile updated successfully
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CitizenProfile'
-      '400':
-        description: Bad request - Invalid input data
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '403':
-        description: Forbidden - Insufficient permissions
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '404':
-        description: Citizen profile not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-# Organization Profile Endpoints
-/profiles/organizations:
-  get:
-    tags:
-      - Organization Profiles
-    summary: List organization profiles
-    description: Retrieve a list of organization profiles
-    operationId: listOrganizationProfiles
-    parameters:
-      - name: page
-        in: query
-        schema:
-          type: integer
-          default: 1
-      - name: limit
-        in: query
-        schema:
-          type: integer
-          default: 20
-      - name: search
-        in: query
-        description: Search by organization name or registration number
-        schema:
-          type: string
-      - name: industry
-        in: query
-        description: Filter by industry type
-        schema:
-          type: string
-    responses:
-      '200':
-        description: Successfully retrieved organization profiles
-        content:
-          application/json:
-            schema:
               type: object
               properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
                 data:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/OrganizationProfile'
-                pagination:
-                  $ref: '#/components/schemas/Pagination'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-/profiles/organization:
-  post:
-    tags:
-      - Organization Profiles
-    summary: Create organization profile
-    description: Create a new organization profile
-    operationId: createOrganizationProfile
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateOrganizationProfileRequest'
-    responses:
-      '201':
-        description: Organization profile created successfully
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OrganizationProfile'
+                  $ref: '#/components/schemas/ProfileWithUser'
       '400':
-        description: Bad request - Invalid input data
+        description: Bad request - Invalid input
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
       '401':
-        description: Unauthorized
+        description: Unauthorized - Authentication required
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '409':
-        description: Conflict - Profile already exists
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-/profiles/{id}/organization:
-  get:
-    tags:
-      - Organization Profiles
-    summary: Get organization profile details
-    description: Retrieve detailed organization profile information
-    operationId: getOrganizationProfile
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      '200':
-        description: Successfully retrieved organization profile
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OrganizationProfile'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '404':
-        description: Organization profile not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-  patch:
-    tags:
-      - Organization Profiles
-    summary: Update organization profile
-    description: Update existing organization profile information
-    operationId: updateOrganizationProfile
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateOrganizationProfileRequest'
-    responses:
-      '200':
-        description: Organization profile updated successfully
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OrganizationProfile'
-      '400':
-        description: Bad request - Invalid input data
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '403':
-        description: Forbidden - Insufficient permissions
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '404':
-        description: Organization profile not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-# Law Firm Profile Endpoints
-/profiles/law-firms:
-  get:
-    tags:
-      - Law Firm Profiles
-    summary: List law firm profiles
-    description: Retrieve a list of law firm profiles
-    operationId: listLawFirmProfiles
-    parameters:
-      - name: page
-        in: query
-        schema:
-          type: integer
-          default: 1
-      - name: limit
-        in: query
-        schema:
-          type: integer
-          default: 20
-      - name: search
-        in: query
-        description: Search by firm name or bar registration number
-        schema:
-          type: string
-      - name: specialization
-        in: query
-        description: Filter by legal specialization
-        schema:
-          type: string
-    responses:
-      '200':
-        description: Successfully retrieved law firm profiles
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                data:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/LawFirmProfile'
-                pagination:
-                  $ref: '#/components/schemas/Pagination'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-/profiles/law-firm:
-  post:
-    tags:
-      - Law Firm Profiles
-    summary: Create law firm profile
-    description: Create a new law firm profile
-    operationId: createLawFirmProfile
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateLawFirmProfileRequest'
-    responses:
-      '201':
-        description: Law firm profile created successfully
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LawFirmProfile'
-      '400':
-        description: Bad request - Invalid input data
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '409':
-        description: Conflict - Profile already exists
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-/profiles/{id}/law-firm:
-  get:
-    tags:
-      - Law Firm Profiles
-    summary: Get law firm profile details
-    description: Retrieve detailed law firm profile information
-    operationId: getLawFirmProfile
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    responses:
-      '200':
-        description: Successfully retrieved law firm profile
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LawFirmProfile'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '404':
-        description: Law firm profile not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-  patch:
-    tags:
-      - Law Firm Profiles
-    summary: Update law firm profile
-    description: Update existing law firm profile information
-    operationId: updateLawFirmProfile
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateLawFirmProfileRequest'
-    responses:
-      '200':
-        description: Law firm profile updated successfully
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LawFirmProfile'
-      '400':
-        description: Bad request - Invalid input data
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '403':
-        description: Forbidden - Insufficient permissions
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '404':
-        description: Law firm profile not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-# Additional Profile Operations
-/profiles/{id}/verify:
-  post:
-    tags:
-      - Profiles
-    summary: Verify profile
-    description: Verify a profile's authenticity and credentials
-    operationId: verifyProfile
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VerifyProfileRequest'
-    responses:
-      '200':
-        description: Profile verified successfully
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VerificationResponse'
-      '400':
-        description: Bad request - Invalid verification data
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '403':
-        description: Forbidden - Insufficient permissions
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '404':
-        description: Profile not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
-/profiles/{id}/status:
-  patch:
-    tags:
-      - Profiles
-    summary: Update profile status
-    description: Change the status of a profile (active, inactive, suspended, etc.)
-    operationId: updateProfileStatus
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - status
-            properties:
-              status:
-                type: string
-                enum: [active, inactive, pending, suspended, verified]
-              reason:
-                type: string
-                description: Reason for status change
-    responses:
-      '200':
-        description: Profile status updated successfully
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Profile'
-      '400':
-        description: Bad request - Invalid status
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        description: Unauthorized
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '403':
-        description: Forbidden - Insufficient permissions
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '404':
-        description: Profile not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '500':
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-    security:
-      - bearerAuth: []
-
+              $ref:

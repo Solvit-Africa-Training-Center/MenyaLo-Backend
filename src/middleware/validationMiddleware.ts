@@ -4,7 +4,7 @@ import { ResponseService } from '../utils/response';
 import { errorLogger } from '../utils/logger';
 
 interface ValidateOption<T> {
-  type: 'body' | 'headers' | 'params';
+  type: 'body' | 'headers' | 'params' | 'query';
   schema: ObjectSchema<T>;
 }
 

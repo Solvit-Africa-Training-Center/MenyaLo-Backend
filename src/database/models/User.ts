@@ -4,6 +4,10 @@ import { Profile } from './Profile';
 import { Rating } from './Rating';
 import { Post } from './Post';
 import { Comment } from './Comment';
+import { Reply } from './Reply';
+import { Upvote } from './Upvote';
+import { Specialty } from './Specialty';
+import { DomainPreference } from './DomainPreference';
 
 interface UserAttributes {
   id: string;
@@ -53,6 +57,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     Rating: typeof Rating;
     Post: typeof Post;
     Comment: typeof Comment;
+    Reply: typeof Reply;
+    Upvote: typeof Upvote;
+    Specialty: typeof Specialty;
+    DomainPreference: typeof DomainPreference;
   }): void {
     User.belongsTo(models.Role, {
       foreignKey: 'roleId',
@@ -63,32 +71,42 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       foreignKey: 'userId',
       as: 'profile',
     });
-    User.hasMany(Rating, {
+
+    User.hasMany(models.Post, {
+      foreignKey: 'authorId',
+      as: 'posts',
+    });
+
+    User.hasMany(models.Comment, {
+      foreignKey: 'authorId',
+      as: 'comments',
+    });
+
+    User.hasMany(models.Reply, {
+      foreignKey: 'authorId',
+      as: 'replies',
+    });
+
+    User.hasMany(models.Rating, {
       foreignKey: 'userId',
       as: 'ratings',
     });
 
-    User.hasMany(Post, {
-      foreignKey: 'authorId',
-      as: 'posts',
-    });
-    User.hasMany(Comment, {
-      foreignKey: 'authorId',
-      as: 'comments',
-    });
-    User.hasMany(Rating, {
+    User.hasMany(models.Upvote, {
       foreignKey: 'userId',
-      as: 'ratings',
+      as: 'upvotes',
     });
 
-    User.hasMany(Post, {
-      foreignKey: 'authorId',
-      as: 'posts',
+    User.hasMany(models.Specialty,{
+      foreignKey: 'firmId',
+      as:'specialty',
     });
-    User.hasMany(Comment, {
-      foreignKey: 'authorId',
-      as: 'comments',
+
+    User.hasMany(models.DomainPreference, {
+      foreignKey:'userId',
+      as:'domainPreferences',
     });
+    
   }
 
   public toJSON(): object | UserAttributes {

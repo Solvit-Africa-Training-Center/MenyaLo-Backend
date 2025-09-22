@@ -22,7 +22,7 @@ module.exports = {
     });
 
     const getRoleId = (roleName) => {
-      const role = roles.find(r => r.name === roleName);
+      const role = roles.find((r) => r.name === roleName);
       return role ? role.id : null;
     };
 
@@ -32,7 +32,7 @@ module.exports = {
       // Citizens
       {
         id: uuidv4(),
-        username: 'john_citizen',
+        username: '@john_citizen',
         name: 'John Doe',
         email: 'john.citizen@example.com',
         password: hashedPassword,
@@ -44,7 +44,7 @@ module.exports = {
       },
       {
         id: uuidv4(),
-        username: 'jane_citizen',
+        username: '@jane_citizen',
         name: 'Jane Smith',
         email: 'jane.citizen@example.com',
         password: hashedPassword,
@@ -56,7 +56,7 @@ module.exports = {
       },
       {
         id: uuidv4(),
-        username: 'mike_citizen',
+        username: '@mike_citizen',
         name: 'Mike Johnson',
         email: 'mike.citizen@example.com',
         password: hashedPassword,

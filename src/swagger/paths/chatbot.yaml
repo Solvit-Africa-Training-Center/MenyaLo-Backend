@@ -22,7 +22,7 @@ paths:
                   items:
                     type: string
                     format: binary
-                  description: "Upload multiple PDF files"
+                  description: 'Upload multiple PDF files'
 
       responses:
         '201':

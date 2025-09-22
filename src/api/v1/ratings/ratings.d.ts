@@ -11,7 +11,9 @@ interface RatingInterface {
 }
 
 type CreateRatingInterface = Omit<RatingInterface, 'id' | 'createdAt' | 'updatedAt'>;
-type UpdateRatingInterface = Partial<Omit<RatingInterface, 'id' | 'createdAt' | 'userId' | 'firmId'>>;
+type UpdateRatingInterface = Partial<
+  Omit<RatingInterface, 'id' | 'createdAt' | 'userId' | 'firmId'>
+>;
 
 interface GetAllRatings {
   ratings: RatingInterface[];
@@ -42,7 +44,6 @@ interface RatingStats {
   twoStars: number;
   oneStar: number;
 }
-
 
 export {
   RatingInterface,

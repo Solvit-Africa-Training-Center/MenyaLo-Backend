@@ -2,7 +2,12 @@ import { Router } from 'express';
 import { authMiddleware } from '../../../middleware/unifiedAuthMiddleware';
 import { ValidationMiddleware } from '../../../middleware/validationMiddleware';
 import { RatingController } from './controller';
-import { createRatingSchema, IdValidationSchema, updateRatingSchema, firmIdValidationSchema } from './validators';
+import {
+  createRatingSchema,
+  IdValidationSchema,
+  updateRatingSchema,
+  firmIdValidationSchema,
+} from './validators';
 import joi from 'joi';
 
 const ratingRoutes = Router();
@@ -36,10 +41,13 @@ ratingRoutes.post(
   '/firm/:firmId',
   authMiddleware,
   ValidationMiddleware({ type: 'params', schema: firmIdValidationSchema }),
-  ValidationMiddleware({ type: 'body', schema: joi.object({
-    star: joi.number().integer().min(1).max(5).required(),
-    review: joi.string().optional(),
-  }) }),
+  ValidationMiddleware({
+    type: 'body',
+    schema: joi.object({
+      star: joi.number().integer().min(1).max(5).required(),
+      review: joi.string().optional(),
+    }),
+  }),
   controller.createRating,
 );
 

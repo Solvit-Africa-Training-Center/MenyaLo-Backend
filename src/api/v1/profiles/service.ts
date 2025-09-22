@@ -1,13 +1,20 @@
 import { Response } from 'express';
 import { Database } from '../../../database';
 import { ResponseService } from '../../../utils/response';
-import { uploadFile } from '../../../utils/upload';
-import { CreateProfileInterface, GetAllProfiles, ProfileInterface, UpdateProfileInterface } from './profiles';
+import { uploadToCloudinary } from '../../../utils/upload';
+import {
+  CreateProfileInterface,
+  GetAllProfiles,
+  ProfileInterface,
+  UpdateProfileInterface,
+} from './profiles';
 import { errorLogger } from '../../../utils/logger';
+import { User } from '../../../database/models/User';
 
 export class ProfileService {
   data: ProfileInterface | CreateProfileInterface | UpdateProfileInterface;
   userId: string;
+  role: 'citizen' | 'organization' | 'law-firm';
   dataId: string;
   file: Express.Multer.File;
   res: Response;
@@ -15,12 +22,14 @@ export class ProfileService {
   constructor(
     data: ProfileInterface | CreateProfileInterface | UpdateProfileInterface,
     userId: string,
+    role: 'citizen' | 'organization' | 'law-firm',
     dataId: string,
     file: Express.Multer.File,
     res: Response,
   ) {
     this.data = data;
     this.userId = userId;
+    this.role = role;
     this.dataId = dataId;
     this.file = file;
     this.res = res;
@@ -39,7 +48,7 @@ export class ProfileService {
     }
   }
 
-  private async getUserRole(userId: string): Promise<string | null> {
+  private async getUserWithRole(userId: string): Promise<unknown> {
     try {
       const user = await Database.User.findOne({
         where: { id: userId },
@@ -53,16 +62,16 @@ export class ProfileService {
         raw: true,
         nest: true,
       });
-      return user?.name || null;
+      return user;
     } catch (error) {
-      errorLogger(error as Error, 'User exists error');
+      errorLogger(error as Error, 'Get user with role error');
       return null;
     }
   }
 
   async create(): Promise<unknown> {
     try {
-      const user = await Database.User.findOne({ where: { id: this.userId }, raw: true });
+      const user = (await this.getUserWithRole(this.userId)) as typeof User;
       if (!user) {
         return ResponseService({
           data: null,
@@ -85,7 +94,7 @@ export class ProfileService {
         });
       }
 
-      const userRole = await this.getUserRole(this.userId);
+      const userRole = this.role;
       if (!userRole) {
         return ResponseService({
           data: null,
@@ -96,30 +105,23 @@ export class ProfileService {
         });
       }
 
-      let imageUrl: string = '';
-      if (this.file) {
-        try {
-          imageUrl = await uploadFile(this.file as Express.Multer.File);
-        } catch (error) {
-          const { message, stack } = error as Error;
-          return ResponseService({
-            data: { message, stack },
-            status: 500,
-            success: false,
-            res: this.res,
-          });
-        }
+      // For citizens, use name from users table if available
+      let profileName = (this.data as CreateProfileInterface).name;
+      if (
+        userRole === 'citizen' ||
+        userRole === 'organization' ||
+        (userRole === 'law-firm' && user.name)
+      ) {
+        profileName = user.name;
       }
 
       const profileData = { ...this.data } as CreateProfileInterface;
-      if (imageUrl) {
-        profileData.imageUrl = imageUrl;
-      }
+      profileData.name = profileName;
 
       const profile = await Database.Profile.create({
         ...profileData,
         userId: this.userId,
-        userRole,
+        userRole: this.role,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -149,7 +151,7 @@ export class ProfileService {
           {
             model: Database.User,
             as: 'user',
-            attributes: ['id', 'email'],
+            attributes: ['id', 'email', 'username', 'address', 'registrationNumber'],
             include: [
               {
                 model: Database.Role,
@@ -394,33 +396,38 @@ export class ProfileService {
         });
       }
 
-      let imageUrl: string = '';
-      if (this.file) {
-        try {
-          imageUrl = await uploadFile(this.file as Express.Multer.File);
-        } catch (error) {
-          const { message, stack } = error as Error;
-          return ResponseService({
-            data: { message, stack },
-            status: 500,
-            success: false,
-            res: this.res,
-          });
-        }
+      // Verify ownership
+      const profile = await Database.Profile.findOne({ where: { id: this.dataId }, raw: true });
+      if (!profile || profile.userId !== this.userId) {
+        return ResponseService({
+          data: null,
+          status: 403,
+          success: false,
+          message: 'You do not have permission to update this profile',
+          res: this.res,
+        });
       }
 
       const updateData: UpdateProfileInterface = { ...this.data };
-      if (imageUrl) {
-        updateData.imageUrl = imageUrl;
-      }
 
-      const updatedProfile = await Database.Profile.update(
+      await Database.Profile.update(
         {
           ...updateData,
           updatedAt: new Date(),
         },
         { where: { id: this.dataId } },
       );
+
+      const updatedProfile = await Database.Profile.findOne({
+        where: { id: this.dataId },
+        include: [
+          {
+            model: Database.User,
+            as: 'user',
+            attributes: ['id', 'email', 'username', 'address'],
+          },
+        ],
+      });
 
       return ResponseService({
         data: updatedProfile,
@@ -464,13 +471,148 @@ export class ProfileService {
         });
       }
 
-      const deletedProfile = await Database.Profile.destroy({ where: { id: this.dataId } });
+      // Verify ownership
+      const profile = await Database.Profile.findOne({ where: { id: this.dataId }, raw: true });
+      if (!profile || profile.userId !== this.userId) {
+        return ResponseService({
+          data: null,
+          status: 403,
+          success: false,
+          message: 'You do not have permission to delete this profile',
+          res: this.res,
+        });
+      }
+
+      await Database.Profile.destroy({ where: { id: this.dataId } });
 
       return ResponseService({
-        data: deletedProfile,
+        data: { id: this.dataId },
         success: true,
         status: 200,
         message: 'Profile successfully deleted',
+        res: this.res,
+      });
+    } catch (error) {
+      const { message, stack } = error as Error;
+      return ResponseService({
+        data: { message, stack },
+        success: false,
+        status: 500,
+        res: this.res,
+      });
+    }
+  }
+
+  async uploadImage(): Promise<unknown> {
+    try {
+      const profileCheck = await this.profileExist();
+      if (profileCheck.error) {
+        const { message, stack } = profileCheck.error as Error;
+        return ResponseService({
+          data: { message, stack },
+          success: false,
+          status: 500,
+          res: this.res,
+        });
+      }
+      if (!profileCheck.exists) {
+        return ResponseService({
+          data: null,
+          status: 404,
+          success: false,
+          message: 'Profile not found',
+          res: this.res,
+        });
+      }
+
+      // Verify ownership
+      const profile = await Database.Profile.findOne({ where: { id: this.dataId }, raw: true });
+      if (!profile || profile.userId !== this.userId) {
+        return ResponseService({
+          data: null,
+          status: 403,
+          success: false,
+          message: 'You do not have permission to update this profile',
+          res: this.res,
+        });
+      }
+
+      let imageUrl: string = '';
+      if (this.file) {
+        try {
+          imageUrl = await uploadToCloudinary(this.file as Express.Multer.File);
+        } catch (error) {
+          const { message, stack } = error as Error;
+          return ResponseService({
+            data: { message, stack },
+            status: 500,
+            success: false,
+            res: this.res,
+          });
+        }
+      }
+
+      await Database.Profile.update({ imageUrl }, { where: { id: this.dataId } });
+
+      return ResponseService({
+        data: { imageUrl },
+        success: true,
+        status: 200,
+        message: 'Profile image uploaded successfully',
+        res: this.res,
+      });
+    } catch (error) {
+      const { message, stack } = error as Error;
+      return ResponseService({
+        data: { message, stack },
+        success: false,
+        status: 500,
+        res: this.res,
+      });
+    }
+  }
+
+  async deleteImage(): Promise<unknown> {
+    try {
+      const profileCheck = await this.profileExist();
+      if (profileCheck.error) {
+        const { message, stack } = profileCheck.error as Error;
+        return ResponseService({
+          data: { message, stack },
+          success: false,
+          status: 500,
+          res: this.res,
+        });
+      }
+      if (!profileCheck.exists) {
+        return ResponseService({
+          data: null,
+          status: 404,
+          success: false,
+          message: 'Profile not found',
+          res: this.res,
+        });
+      }
+
+      // Verify ownership
+      const profile = await Database.Profile.findOne({ where: { id: this.dataId }, raw: true });
+      if (!profile || profile.userId !== this.userId) {
+        return ResponseService({
+          data: null,
+          status: 403,
+          success: false,
+          message: 'You do not have permission to update this profile',
+          res: this.res,
+        });
+      }
+
+      await Database.Profile.update({ imageUrl: undefined }, { where: { id: this.dataId } });
+
+      return ResponseService({
+        data: { id: this.dataId },
+        success: true,
+        status: 200,
+        message: 'Profile image deleted successfully',
         res: this.res,
       });
     } catch (error) {

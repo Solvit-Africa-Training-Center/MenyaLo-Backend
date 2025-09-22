@@ -14,7 +14,7 @@ const sessionStore = new SequelizeStore({
 sessionStore.sync();
 
 export const sessionMiddleware = expressSession({
-  secret: process.env.SESSION_SECRET || 'my3Secret2Key1is0Awesome',
+  secret: process.env.SESSION_SECRET as string,
   store: sessionStore,
   resave: false,
   saveUninitialized: false,

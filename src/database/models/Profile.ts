@@ -2,32 +2,42 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 import { User } from './User';
 import { Rating } from './Rating';
 
+interface SocialLinks {
+  linkedin?: string;
+  twitter?: string;
+  github?: string;
+  facebook?: string;
+  instagram?: string;
+  website?: string;
+}
+
 interface ProfileAttributes {
   id: string;
   userId: string;
-  userRole: string;
+  userRole: 'citizen' | 'organization' | 'law-firm';
   name: string;
   bio?: string;
   occupation?: string;
   imageUrl?: string;
   website?: string;
   phoneNumber?: string;
+  socials?: SocialLinks;
   teamSize?: number;
   yearsOfExperience?: number;
   caseResolved?: number;
   successRate?: number;
   establishedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date | null;
 }
 
 export interface ProfileCreationAttributes
-  extends Omit<ProfileAttributes, 'id' | 'deletedAt' | 'createdAt' | 'updatedAt'> {
+  extends Omit<ProfileAttributes, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {
   id?: string;
-  deletedAt?: null;
   createdAt?: Date;
   updatedAt?: Date;
+  deletedAt?: Date | null;
 }
 
 export class Profile
@@ -36,23 +46,27 @@ export class Profile
 {
   public id!: string;
   public userId!: string;
-  public userRole!: string;
+  public userRole!: 'citizen' | 'organization' | 'law-firm';
   public name!: string;
   public bio?: string;
-  public imageUrl?: string;
   public occupation?: string;
+  public imageUrl?: string;
   public website?: string;
   public phoneNumber?: string;
+  public socials?: SocialLinks;
   public teamSize?: number;
   public yearsOfExperience?: number;
   public caseResolved?: number;
   public successRate?: number;
   public establishedAt?: Date;
+  public createdAt!: Date;
   public updatedAt!: Date;
-  public createdAt: Date = new Date();
-  public deletedAt: null = null;
+  public deletedAt?: Date | null;
 
-  static associate(models: { User: typeof User; Rating: typeof Rating }): void {
+  static associate(models: {
+    User: typeof User;
+    Rating: typeof Rating;
+  }): void {
     Profile.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user',
@@ -64,13 +78,10 @@ export class Profile
     });
   }
 
-  public toJSON(): object | ProfileAttributes {
-    return {
-      ...this.get(),
-      updatedAt: undefined,
-      createdAt: undefined,
-      deletedAt: undefined,
-    };
+  public toJSON(): Partial<ProfileAttributes> {
+    const values = { ...this.get() } as ProfileAttributes;
+    delete values.deletedAt;
+    return values;
   }
 }
 
@@ -85,6 +96,7 @@ export const ProfileModel = (sequelize: Sequelize): typeof Profile => {
       userId: {
         type: DataTypes.UUID,
         allowNull: false,
+        unique: true,
         references: {
           model: 'users',
           key: 'id',
@@ -93,7 +105,7 @@ export const ProfileModel = (sequelize: Sequelize): typeof Profile => {
         onDelete: 'CASCADE',
       },
       userRole: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('citizen', 'organization', 'law-firm'),
         allowNull: false,
       },
       name: {
@@ -120,6 +132,11 @@ export const ProfileModel = (sequelize: Sequelize): typeof Profile => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      socials: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+        defaultValue: {},
+      },
       teamSize: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -133,11 +150,25 @@ export const ProfileModel = (sequelize: Sequelize): typeof Profile => {
         allowNull: true,
       },
       successRate: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.DECIMAL(5, 2),
         allowNull: true,
       },
       establishedAt: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      deletedAt: {
+        type: DataTypes.DATE,
         allowNull: true,
       },
     },

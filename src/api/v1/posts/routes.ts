@@ -3,10 +3,11 @@ import { authMiddleware } from '../../../middleware/unifiedAuthMiddleware';
 import { ValidationMiddleware } from '../../../middleware/validationMiddleware';
 import { PostController } from './controller';
 import { createPostSchema, IdValidationSchema, updatePostSchema } from './validators';
-import { upload } from '../../../utils/upload';
+import { imageUpload } from '../../../utils/upload';
 
 const postRoutes = Router();
 const controller = new PostController();
+const upload = imageUpload;
 
 postRoutes.get('/', controller.getAllPosts);
 postRoutes.get(
