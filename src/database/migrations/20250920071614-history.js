@@ -1,5 +1,6 @@
 'use strict';
 
+
 export async function up(queryInterface, Sequelize) {
   // Create history table with the correct columns
   await queryInterface.createTable('history', {

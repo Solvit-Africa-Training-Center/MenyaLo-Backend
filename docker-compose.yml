@@ -89,4 +89,3 @@ volumes:
 networks:
   menyalo-network:
     driver: bridge
-

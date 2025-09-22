@@ -4,6 +4,7 @@ import { Profile } from './Profile';
 import { Rating } from './Rating';
 import { Post } from './Post';
 import { Comment } from './Comment';
+import { Reply } from './Reply';
 
 interface UserAttributes {
   id: string;
@@ -53,6 +54,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     Rating: typeof Rating;
     Post: typeof Post;
     Comment: typeof Comment;
+    Reply: typeof Reply;
   }): void {
     User.belongsTo(models.Role, {
       foreignKey: 'roleId',
@@ -63,31 +65,25 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       foreignKey: 'userId',
       as: 'profile',
     });
-    User.hasMany(Rating, {
-      foreignKey: 'userId',
-      as: 'ratings',
-    });
 
-    User.hasMany(Post, {
+    User.hasMany(models.Post, {
       foreignKey: 'authorId',
       as: 'posts',
     });
-    User.hasMany(Comment, {
+
+    User.hasMany(models.Comment, {
       foreignKey: 'authorId',
       as: 'comments',
     });
-    User.hasMany(Rating, {
-      foreignKey: 'userId',
-      as: 'ratings',
+    
+    User.hasMany(models.Reply, {
+      foreignKey: 'authorId',
+      as: 'replies',
     });
 
-    User.hasMany(Post, {
-      foreignKey: 'authorId',
-      as: 'posts',
-    });
-    User.hasMany(Comment, {
-      foreignKey: 'authorId',
-      as: 'comments',
+    User.hasMany(models.Rating, {
+      foreignKey: 'userId',
+      as: 'ratings',
     });
   }
 

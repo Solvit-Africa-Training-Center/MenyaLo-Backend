@@ -5,7 +5,7 @@ import userRoutes from './users/routes';
 import subscriptionRoutes from './subscribers/routes';
 import postRoutes from './posts/routes';
 import commentRoutes from './comments/routes';
-import chatBotRoutes from './chatbot/route';
+import chatBotRoutes from './chatbot/routes';
 import ratingRoutes from './ratings/routes';
 import profileRoutes from './profiles/routes';
 

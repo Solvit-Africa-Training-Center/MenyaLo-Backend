@@ -1,4 +1,3 @@
-
 /subscribers:
   get:
     summary: Get all subscribers
@@ -28,9 +27,6 @@
       content:
         application/json:
           schema:
-            type: object
-            required:
-              - email
             type: object
             required:
               - email
@@ -77,23 +73,3 @@
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
-
-/subscribers:
-  get:
-    summary: Get all subscribers
-    description: Retrieves a list of all newsletter subscribers (admin only).
-    tags: [Subscription]
-    security:
-      - bearerAuth: []
-    responses:
-      200:
-        description: List of subscribers retrieved successfully
-      401:
-        description: Unauthorized
-      500:
-        description: Internal server error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-
