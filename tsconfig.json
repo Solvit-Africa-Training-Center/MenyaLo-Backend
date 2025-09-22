@@ -1,11 +1,11 @@
 {
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     "allowJs": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
   },
   "include": ["src/**/*", "__test__/sum.spec.ts"],
   "exclude": ["node_modules", "dist", "eslint.config.mts"],
