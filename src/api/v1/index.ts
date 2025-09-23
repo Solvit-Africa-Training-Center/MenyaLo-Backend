@@ -10,7 +10,7 @@ const router: Router = express.Router();
 router.use('/roles', roleRoutes);
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
-router.use('/subscription', subscriptionRoutes);
+router.use('/subscribers', subscriptionRoutes);
 router.use('/posts', postRoutes);
 
 export default router;

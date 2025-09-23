@@ -2,8 +2,8 @@ import { IRequestUser } from '../../../middleware/unifiedAuthMiddleware';
 
 interface PostInterface {
   id: string;
-  title: string;
-  slug: string;
+  title?: string;
+  slug?: string;
   content: string;
   image_url?: string;
   authorId: string;

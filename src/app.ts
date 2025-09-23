@@ -11,7 +11,7 @@ import { swaggerRouter } from './swagger/router';
 import passport from 'passport';
 import { sessionMiddleware } from './utils/session';
 import rateLimit from 'express-rate-limit';
-
+import path from 'path';
 config();
 
 const apiLimiter = rateLimit({

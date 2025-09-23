@@ -2,87 +2,91 @@ import { ResponseService } from '../../../utils/response';
 import { Response } from 'express';
 import { Database } from '../../../database';
 import { sendMail } from '../../../services/external/mailer';
-import { CreateSubscriberInterface } from './subscribe';
 import jwt from 'jsonwebtoken';
 
 export class SubscriptionService {
-  data: CreateSubscriberInterface;
+  email: string;
   token: string;
   res: Response;
 
-  constructor(data: CreateSubscriberInterface, token: string, res: Response) {
-    this.data = data;
+  constructor(email: string, token: string, res: Response) {
+    this.email = email;
     this.token = token;
     this.res = res;
   }
 
   async subscribe(): Promise<void> {
     try {
-      const { email } = this.data;
+      if (!this.email) {
+        ResponseService({
+          data: null,
+          status: 400,
+          success: false,
+          message: 'Email is required',
+          res: this.res,
+        });
+        return;
+      }
+
       const userName = await Database.User.findOne({
-        where: { email: this.data.email },
-        raw: true,
+        where: { email: this.email },
+        raw:true,
       });
       const subscriber = await Database.Subscriber.findOne({
-        where: { email: this.data.email },
-        raw: true,
+        where: { email: this.email },
         paranoid: false,
+        raw:true,
       });
       if (subscriber?.subscribed === false) {
         await Database.Subscriber.update(
-          { subscribed: true },
-          { where: { email: this.data.email } },
+          { subscribed: true }, 
+          { where: { email: this.email } },
         );
+        
         sendMail(
-          email as string,
-          userName?.username as string,
+          this.email,
+          userName?.username || userName?.name || 'Dear', 
           'resubscribed',
           'Welcome back to Menyalo',
         );
+        
         ResponseService({
           data: subscriber,
           status: 200,
           success: true,
-          message: 'Subcriber restored',
+          message: 'Subscriber restored',
           res: this.res,
         });
       } else if (subscriber?.subscribed === true) {
         sendMail(
-          email as string,
-          userName?.name as string,
+          this.email,
+          userName?.username || userName?.name || 'User', 
           'existing-subscriber',
           'You are already a cherished member of Menyalo',
         );
+        
         ResponseService({
           data: subscriber,
           status: 200,
           success: true,
-          message: 'Subcriber already exists',
+          message: 'Subscriber already exists',
           res: this.res,
         });
       } else {
-        if (!this.data.email) {
-          ResponseService({
-            data: null,
-            status: 400,
-            success: false,
-            message: 'Email is required',
-            res: this.res,
-          });
-          return;
-        }
-        await Database.Subscriber.create({
-          email: this.data.email,
+        const newSubscriber = await Database.Subscriber.create({
+          email: this.email,
           subscribed: true,
         });
+        
         sendMail(
-          email as string,
-          userName?.name as string,
+          this.email,
+          userName?.username || userName?.name || 'User',
           'subscribe',
           'You are in! Welcome to Menyalo',
         );
+        
         ResponseService({
-          data: subscriber,
+          data: newSubscriber, 
           status: 200,
           success: true,
           message: 'Subscribed',
@@ -107,8 +111,7 @@ export class SubscriptionService {
       };
       const email = decoded.email;
       const userName = await Database.User.findOne({
-        where: { email: this.data.email },
-        raw: true,
+        where: { email: email as string }, 
       });
 
       await Database.Subscriber.update({ subscribed: false }, { where: { email } });
@@ -120,9 +123,10 @@ export class SubscriptionService {
         message: 'Unsubscribed',
         res: this.res,
       });
+      
       sendMail(
         email,
-        userName?.name as string,
+        userName?.username || userName?.name || 'User', 
         'unsubscribe',
         'You\'ve been unsubscribed from Menyalo',
       );
@@ -135,12 +139,6 @@ export class SubscriptionService {
         message: 'Invalid or expired unsubscribe link.',
         res: this.res,
       });
-      ResponseService({
-        data: { message, stack },
-        success: false,
-        status: 500,
-        res: this.res,
-      });
     }
   }
 
@@ -150,21 +148,23 @@ export class SubscriptionService {
         where: { subscribed: true },
         raw: true,
       });
-      if (!subscribers) {
+      
+      if (!subscribers || subscribers.length === 0) {
         ResponseService({
-          data: null,
-          status: 404,
-          success: false,
-          message: 'Subscribers not found!',
+          data: [],
+          status: 200, 
+          success: true,
+          message: 'No subscribers found',
           res: this.res,
         });
         return;
       }
+      
       ResponseService({
         data: subscribers,
         status: 200,
         success: true,
-        message: `'Subscribers: '${subscribers.length}`,
+        message: `Subscribers: ${subscribers.length}`, 
         res: this.res,
       });
     } catch (error) {
