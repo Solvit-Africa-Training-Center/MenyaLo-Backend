@@ -15,7 +15,6 @@ README.md
 .DS_Store
 Thumbs.db
 .history
-
 # Test files
 **/*.test.ts
 **/*.test.js
