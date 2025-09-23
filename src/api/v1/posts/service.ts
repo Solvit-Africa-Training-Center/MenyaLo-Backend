@@ -32,7 +32,7 @@ export class PostService {
       if (!post) {
         return { exists: false };
       } else {
-        return { exists: true};
+        return { exists: true };
       }
     } catch (error) {
       return { exists: false, error };

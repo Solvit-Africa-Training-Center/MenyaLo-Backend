@@ -10,7 +10,7 @@ import {
   deleteDocumentById,
   getQueryHistory,
 } from './controller';
-import { infoLogger } from '../../../utils/logger'; 
+import { infoLogger } from '../../../utils/logger';
 
 const router = Router();
 
@@ -27,7 +27,6 @@ const upload = multer({
     files: 1, // Only 1 file per request
   },
   fileFilter: (req, file, cb) => {
-    
     if (file.mimetype === 'application/pdf') {
       cb(null, true);
     } else {

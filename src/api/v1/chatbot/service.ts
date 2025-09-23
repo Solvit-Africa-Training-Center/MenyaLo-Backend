@@ -68,11 +68,8 @@ export async function updateDocument(id: number, content: string): Promise<void>
 }
 
 export async function deleteDocument(id: number): Promise<void> {
-  await Database.database.query(
-    'DELETE FROM documents WHERE id = $1 RETURNING *',
-    {
-      bind: [id],
-      type: QueryTypes.SELECT,
-    },
-  );
+  await Database.database.query('DELETE FROM documents WHERE id = $1 RETURNING *', {
+    bind: [id],
+    type: QueryTypes.SELECT,
+  });
 }

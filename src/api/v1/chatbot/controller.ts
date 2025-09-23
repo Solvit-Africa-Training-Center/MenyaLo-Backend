@@ -87,7 +87,10 @@ export async function uploadDocument(req: Request, res: Response): Promise<void>
     }
 
     res.status(201).json({ message: 'Uploaded successfully', chunks: inserted });
-    infoLogger(`Uploaded ${inserted.length} chunks from file ${req.file.originalname}`, 'uploadDocument');
+    infoLogger(
+      `Uploaded ${inserted.length} chunks from file ${req.file.originalname}`,
+      'uploadDocument',
+    );
   } catch (err: unknown) {
     logAndSendError(res, err, 'uploadDocument');
   }
@@ -151,9 +154,10 @@ Answer:
 
     // 8️⃣ Send response
     res.json({
-      answer: source === 'web'
-        ? `Not found in database. Here’s a web-sourced answer:\n\n${answer}`
-        : answer,
+      answer:
+        source === 'web'
+          ? `Not found in database. Here’s a web-sourced answer:\n\n${answer}`
+          : answer,
       documents: result,
       source,
     });
@@ -166,10 +170,9 @@ Answer:
 
 export async function getQueryHistory(req: Request, res: Response): Promise<void> {
   try {
-    const result = await Database.database.query(
-      'SELECT * FROM history ORDER BY created_at DESC',
-      { type: QueryTypes.SELECT },
-    );
+    const result = await Database.database.query('SELECT * FROM history ORDER BY created_at DESC', {
+      type: QueryTypes.SELECT,
+    });
     res.json(result);
     infoLogger('Fetched query history', 'getQueryHistory');
   } catch (err: unknown) {
@@ -224,13 +227,10 @@ export async function updateDocumentById(req: Request, res: Response): Promise<v
 export async function deleteDocumentById(req: Request, res: Response): Promise<void> {
   try {
     const { id } = req.params;
-    const result = await Database.database.query(
-      'DELETE FROM documents WHERE id=$1 RETURNING *',
-      {
-        bind: [id],
-        type: QueryTypes.SELECT,
-      },
-    );
+    const result = await Database.database.query('DELETE FROM documents WHERE id=$1 RETURNING *', {
+      bind: [id],
+      type: QueryTypes.SELECT,
+    });
 
     if (!result || result.length === 0) {
       res.status(404).json({ error: 'Document not found' });
