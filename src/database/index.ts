@@ -9,10 +9,7 @@ interface ConfigInterface {
   port: number;
   host: string;
   dialect: string;
-<<<<<<< HEAD
   ssl?: string;
-=======
->>>>>>> 77320c9 (added swagger)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dialectOptions?: any;
 }

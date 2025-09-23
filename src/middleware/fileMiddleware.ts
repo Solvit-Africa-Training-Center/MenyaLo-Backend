@@ -94,7 +94,7 @@ export const fileValidationMiddleware =
   };
 
 // Predefined validators for common use cases
-export const multipleImageValidation = fileValidationMiddleware({
+export const postImageValidation = fileValidationMiddleware({
   fieldName: 'images',
   minFiles: 1,
   maxFiles: 8,
@@ -102,7 +102,7 @@ export const multipleImageValidation = fileValidationMiddleware({
   maxFileSize: 5 * 1024 * 1024, // 5MB
 });
 
-export const singleImageValidation = fileValidationMiddleware({
+export const profileImageValidation = fileValidationMiddleware({
   fieldName: 'profilePicture',
   minFiles: 0,
   maxFiles: 1,

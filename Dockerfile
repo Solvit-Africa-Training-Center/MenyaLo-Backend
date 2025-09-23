@@ -1,5 +1,5 @@
 # 1. Use Node.js official image
-FROM node:18-alpine
+FROM node:22.17.0-alpine
 
 # 2. Set working directory inside the container
 WORKDIR /usr/src/app
@@ -9,7 +9,7 @@ COPY package*.json ./
 
 # 4. Install dependencies
 RUN npm install
-
+RUN npm install typescript
 # RUN npx sequelize-cli db:create
 
 # 5. Copy the rest of your project files
