@@ -109,3 +109,11 @@ export const profileImageValidation = fileValidationMiddleware({
   allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
   maxFileSize: 2 * 1024 * 1024, // 2MB
 });
+
+export const documentValidation = fileValidationMiddleware({
+  fieldName: 'documents',
+  minFiles: 1,
+  maxFiles: 1,
+  allowedMimeTypes: ['application/pdf', 'application/msword'],
+  maxFileSize: 100 * 1024 * 1024, // 10MB
+});
