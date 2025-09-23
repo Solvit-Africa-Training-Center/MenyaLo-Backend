@@ -316,7 +316,7 @@ export class AuthService {
 
       res.clearCookie('auth_token', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'development',
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
       });
       res.clearCookie('connect.sid');
@@ -336,7 +336,7 @@ export class AuthService {
 
       const { message, stack } = error as Error;
       ResponseService({
-        data: process.env.NODE_ENV === 'developement' ? { message, stack } : null,
+        data: process.env.NODE_ENV === 'production' ? { message, stack } : null,
         status: 500,
         success: false,
         message: 'Logout failed - please try again',
