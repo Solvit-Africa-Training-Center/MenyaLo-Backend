@@ -1,14 +1,17 @@
+import fs from 'fs';
 import { Database } from '../../../database';
 import { getEmbedding, generateAnswer } from './AIservice';
 import { QueryTypes } from 'sequelize';
 
-// Format embedding for Postgres vector
 function formatEmbeddingForSQL(embedding: number[]): string {
   return `[${embedding.join(',')}]`;
 }
 
 export async function processFile(file: Express.Multer.File): Promise<void> {
-  const text = file.buffer.toString('utf-8');
+  // If multer uses disk storage
+  const text = fs.readFileSync(file.path, 'utf-8');
+  // If using memoryStorage, replace with: const text = file.buffer.toString('utf-8');
+
   const embedding = await getEmbedding(text);
   const formattedEmbedding = formatEmbeddingForSQL(embedding);
 
@@ -36,20 +39,19 @@ export async function queryDocuments(question: string): Promise<string> {
     },
   );
 
-  const context = rows[0]?.content ?? '';
+  if (!rows.length) {
+    return 'No relevant documents found.';
+  }
 
+  const context = rows[0].content;
   return await generateAnswer(context, question);
 }
 
 export async function getAllDocuments(): Promise<{ id: number; content: string }[]> {
-  const rows = await Database.database.query<{ id: number; content: string }>(
-    'SELECT id, content FROM documents',
-    {
-      type: QueryTypes.SELECT,
-    },
+  return await Database.database.query<{ id: number; content: string }>(
+    'SELECT id, content FROM documents ORDER BY id DESC',
+    { type: QueryTypes.SELECT },
   );
-
-  return rows;
 }
 
 export async function updateDocument(id: number, content: string): Promise<void> {
@@ -57,17 +59,20 @@ export async function updateDocument(id: number, content: string): Promise<void>
   const formattedEmbedding = formatEmbeddingForSQL(embedding);
 
   await Database.database.query(
-    'UPDATE documents SET content = $1, embedding = $2::vector WHERE id = $3',
+    'UPDATE documents SET content = $1, embedding = $2::vector WHERE id = $3 RETURNING *',
     {
       bind: [content, formattedEmbedding, id],
-      type: QueryTypes.UPDATE,
+      type: QueryTypes.SELECT,
     },
   );
 }
 
 export async function deleteDocument(id: number): Promise<void> {
-  await Database.database.query('DELETE FROM documents WHERE id = $1', {
-    bind: [id],
-    type: QueryTypes.DELETE,
-  });
+  await Database.database.query(
+    'DELETE FROM documents WHERE id = $1 RETURNING *',
+    {
+      bind: [id],
+      type: QueryTypes.SELECT,
+    },
+  );
 }
