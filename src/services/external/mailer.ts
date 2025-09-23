@@ -23,29 +23,33 @@ const sendMail = (email: string, name: string, fileName: string, subject: string
 
   const templatePath = path.join(__dirname, '../../../views', `email-templates/${fileName}.ejs`);
 
-  ejs.renderFile(templatePath, { 
-    name: name as string, 
-    email: email as string, 
-    unsubscribeLink, 
-  }, (err, html) => {
-    if (err) {
-      return errorLogger(err, 'Error rendering EJS:');
-    }
-
-    const mailOptions = {
-      from: `MenyaLo <${process.env.SMTP_EMAIL}>`,
-      to: email,
-      subject: subject as string,
-      html,
-    };
-
-    transporter.sendMail(mailOptions, (error) => {
-      if (error) {
-        return errorLogger(error, 'Error sending email:');
+  ejs.renderFile(
+    templatePath,
+    {
+      name: name as string,
+      email: email as string,
+      unsubscribeLink,
+    },
+    (err, html) => {
+      if (err) {
+        return errorLogger(err, 'Error rendering EJS:');
       }
-      logger.info('Email successfully sent.');
-    });
-  });
+
+      const mailOptions = {
+        from: `MenyaLo <${process.env.SMTP_EMAIL}>`,
+        to: email,
+        subject: subject as string,
+        html,
+      };
+
+      transporter.sendMail(mailOptions, (error) => {
+        if (error) {
+          return errorLogger(error, 'Error sending email:');
+        }
+        logger.info('Email successfully sent.');
+      });
+    },
+  );
 };
 
 const sendMailInBulk = (email: string[], fileName: string, subject: string): void => {
@@ -57,7 +61,7 @@ const sendMailInBulk = (email: string[], fileName: string, subject: string): voi
     }
 
     const mailOptions = {
-      from: `MenyaLo <${process.env.SMTP_EMAIL}>`, 
+      from: `MenyaLo <${process.env.SMTP_EMAIL}>`,
       to: email,
       subject: subject as string,
       html,

@@ -30,26 +30,23 @@ export class SubscriptionService {
 
       const userName = await Database.User.findOne({
         where: { email: this.email },
-        raw:true,
+        raw: true,
       });
       const subscriber = await Database.Subscriber.findOne({
         where: { email: this.email },
         paranoid: false,
-        raw:true,
+        raw: true,
       });
       if (subscriber?.subscribed === false) {
-        await Database.Subscriber.update(
-          { subscribed: true }, 
-          { where: { email: this.email } },
-        );
-        
+        await Database.Subscriber.update({ subscribed: true }, { where: { email: this.email } });
+
         sendMail(
           this.email,
-          userName?.username || userName?.name || 'Dear', 
+          userName?.username || userName?.name || 'Dear',
           'resubscribed',
           'Welcome back to Menyalo',
         );
-        
+
         ResponseService({
           data: subscriber,
           status: 200,
@@ -60,11 +57,11 @@ export class SubscriptionService {
       } else if (subscriber?.subscribed === true) {
         sendMail(
           this.email,
-          userName?.username || userName?.name || 'User', 
+          userName?.username || userName?.name || 'User',
           'existing-subscriber',
           'You are already a cherished member of Menyalo',
         );
-        
+
         ResponseService({
           data: subscriber,
           status: 200,
@@ -77,16 +74,16 @@ export class SubscriptionService {
           email: this.email,
           subscribed: true,
         });
-        
+
         sendMail(
           this.email,
           userName?.username || userName?.name || 'User',
           'subscribe',
           'You are in! Welcome to Menyalo',
         );
-        
+
         ResponseService({
-          data: newSubscriber, 
+          data: newSubscriber,
           status: 200,
           success: true,
           message: 'Subscribed',
@@ -111,7 +108,7 @@ export class SubscriptionService {
       };
       const email = decoded.email;
       const userName = await Database.User.findOne({
-        where: { email: email as string }, 
+        where: { email: email as string },
       });
 
       await Database.Subscriber.update({ subscribed: false }, { where: { email } });
@@ -123,12 +120,12 @@ export class SubscriptionService {
         message: 'Unsubscribed',
         res: this.res,
       });
-      
+
       sendMail(
         email,
-        userName?.username || userName?.name || 'User', 
+        userName?.username || userName?.name || 'User',
         'unsubscribe',
-        'You\'ve been unsubscribed from Menyalo',
+        "You've been unsubscribed from Menyalo",
       );
     } catch (error) {
       const { message, stack } = error as Error;
@@ -148,23 +145,23 @@ export class SubscriptionService {
         where: { subscribed: true },
         raw: true,
       });
-      
+
       if (!subscribers || subscribers.length === 0) {
         ResponseService({
           data: [],
-          status: 200, 
+          status: 200,
           success: true,
           message: 'No subscribers found',
           res: this.res,
         });
         return;
       }
-      
+
       ResponseService({
         data: subscribers,
         status: 200,
         success: true,
-        message: `Subscribers: ${subscribers.length}`, 
+        message: `Subscribers: ${subscribers.length}`,
         res: this.res,
       });
     } catch (error) {

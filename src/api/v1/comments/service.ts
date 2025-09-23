@@ -1,7 +1,12 @@
 import { Response } from 'express';
 import { Database } from '../../../database';
 import { ResponseService } from '../../../utils/response';
-import { CreateCommentInterface, GetAllComments, CommentInterface, UpdateCommentInterface } from './comments';
+import {
+  CreateCommentInterface,
+  GetAllComments,
+  CommentInterface,
+  UpdateCommentInterface,
+} from './comments';
 
 export class CommentService {
   data: CommentInterface | CreateCommentInterface | UpdateCommentInterface;
@@ -30,7 +35,7 @@ export class CommentService {
       if (!comment) {
         return { exists: false };
       } else {
-        return { exists: true};
+        return { exists: true };
       }
     } catch (error) {
       return { exists: false, error };
@@ -39,7 +44,6 @@ export class CommentService {
 
   async create(): Promise<unknown> {
     try {
-
       const author = await Database.User.findOne({ where: { id: this.userId }, raw: true });
       if (!author) {
         return ResponseService({
@@ -51,7 +55,7 @@ export class CommentService {
         });
       }
 
-      const post = await Database.Post.findOne({ where: { id: this.postId }, raw:true });
+      const post = await Database.Post.findOne({ where: { id: this.postId }, raw: true });
       if (!post) {
         return ResponseService({
           data: null,
@@ -92,9 +96,9 @@ export class CommentService {
 
   async findAll(): Promise<unknown> {
     try {
-      const post = await Database.Post.findOne({ where: { id: this.postId }});
+      const post = await Database.Post.findOne({ where: { id: this.postId } });
       if (!post) {
-         return ResponseService({
+        return ResponseService({
           data: null,
           status: 404,
           success: false,
@@ -103,7 +107,7 @@ export class CommentService {
         });
       }
       const comments = await Database.Comment.findAll({
-        where:{ postId: this.postId},
+        where: { postId: this.postId },
         include: [
           {
             model: Database.User,
@@ -146,16 +150,16 @@ export class CommentService {
 
   async findOne(): Promise<unknown> {
     try {
-      const post = await Database.Post.findOne({ where: { id: this.postId }});
+      const post = await Database.Post.findOne({ where: { id: this.postId } });
       if (!post) {
-         return ResponseService({
+        return ResponseService({
           data: null,
           status: 404,
           success: false,
           message: 'Post not found',
           res: this.res,
         });
-      } 
+      }
 
       const commentCheck = await this.commentExist();
 

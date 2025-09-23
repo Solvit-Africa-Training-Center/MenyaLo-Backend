@@ -27,7 +27,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Comments successfully retrieved"
+                  example: 'Comments successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -78,7 +78,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Comment successfully created"
+                  example: 'Comment successfully created'
                 status:
                   type: integer
                   example: 201
@@ -134,7 +134,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Comment successfully retrieved"
+                  example: 'Comment successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -194,7 +194,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Comment successfully updated"
+                  example: 'Comment successfully updated'
                 status:
                   type: integer
                   example: 200
@@ -246,7 +246,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Comment successfully deleted"
+                  example: 'Comment successfully deleted'
                 status:
                   type: integer
                   example: 200

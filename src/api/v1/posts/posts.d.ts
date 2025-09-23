@@ -21,14 +21,14 @@ interface PostRequestInterface extends IRequestUser {
   params: {
     id: string;
   };
-  file?:Express.Multer.File;
+  file?: Express.Multer.File;
 }
 interface UpdatePostRequestInterface extends IRequestUser {
   body: UpdatePostInterface;
   params: {
     id: string;
   };
-  file?:Express.Multer.File;
+  file?: Express.Multer.File;
 }
 
 interface GetAllPosts {

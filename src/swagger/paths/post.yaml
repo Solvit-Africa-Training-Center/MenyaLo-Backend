@@ -20,7 +20,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Posts successfully retrieved"
+                  example: 'Posts successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -81,7 +81,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Post successfully created"
+                  example: 'Post successfully created'
                 status:
                   type: integer
                   example: 201
@@ -131,7 +131,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Post successfully retrieved"
+                  example: 'Post successfully retrieved'
                 status:
                   type: integer
                   example: 200
@@ -166,21 +166,21 @@
       content:
         multipart/form-data:
           schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                  description: Post title
-                content:
-                  type: string
-                  description: Post content
-                image:
-                  type: string
-                  format: binary
-                  description: Optional image file
-        application/json:                  
-            schema:
-              $ref: '#/components/schemas/UpdatePost'
+            type: object
+            properties:
+              title:
+                type: string
+                description: Post title
+              content:
+                type: string
+                description: Post content
+              image:
+                type: string
+                format: binary
+                description: Optional image file
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdatePost'
     responses:
       '200':
         description: Post updated successfully
@@ -199,7 +199,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Post successfully updated"
+                  example: 'Post successfully updated'
                 status:
                   type: integer
                   example: 200
@@ -245,7 +245,7 @@
                   example: true
                 message:
                   type: string
-                  example: "Post successfully deleted"
+                  example: 'Post successfully deleted'
                 status:
                   type: integer
                   example: 200
