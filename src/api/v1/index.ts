@@ -4,6 +4,7 @@ import authRoutes from './auth/routes';
 import userRoutes from './users/routes';
 import subscriptionRoutes from './subscribers/routes';
 import postRoutes from './posts/routes';
+import commentRoutes from './comments/routes';
 
 const router: Router = express.Router();
 
@@ -12,5 +13,6 @@ router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/subscribers', subscriptionRoutes);
 router.use('/posts', postRoutes);
+router.use('/posts', commentRoutes);
 
 export default router;
