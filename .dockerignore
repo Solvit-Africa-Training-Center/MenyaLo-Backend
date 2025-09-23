@@ -17,9 +17,7 @@ Thumbs.db
 .history
 # Test files
 **/*.test.ts
-**/*.test.js
 **/*.spec.ts
-**/*.spec.js
 src/__tests__
 
 # Development files
