@@ -1,7 +1,7 @@
 import express, { Request, Response, Express, NextFunction } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-// import { corsOptions } from './middleware/corsMiddleware';
+import { corsOptions } from './middleware/corsMiddleware';
 import helmet from 'helmet';
 import { config } from 'dotenv';
 import redis from './utils/redis';
@@ -11,6 +11,7 @@ import { swaggerRouter } from './swagger/router';
 import passport from 'passport';
 import { sessionMiddleware } from './utils/session';
 import rateLimit from 'express-rate-limit';
+
 config();
 
 const apiLimiter = rateLimit({
@@ -29,8 +30,7 @@ export const createServer = (): Express => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  // app.use(cors(corsOptions));
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(helmet());
 
   app.set('views', 'views');
