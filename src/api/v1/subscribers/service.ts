@@ -74,7 +74,6 @@ export class SubscriptionService {
           email: this.email,
           subscribed: true,
         });
-
         sendMail(
           this.email,
           userName?.username || userName?.name || 'User',
@@ -156,7 +155,6 @@ export class SubscriptionService {
         });
         return;
       }
-
       ResponseService({
         data: subscribers,
         status: 200,
