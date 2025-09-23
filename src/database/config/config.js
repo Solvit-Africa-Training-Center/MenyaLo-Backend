@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-require-imports */
+const { Pool } = require('pg');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -69,4 +70,13 @@ if (env === 'development') {
   });
 }
 
-module.exports = databaseConfig;
+const pool = new Pool({
+  user: databaseConfig.username,
+  host: databaseConfig.host,
+  database: databaseConfig.database,
+  password: databaseConfig.password,
+  port: databaseConfig.port,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+((module.exports = databaseConfig), pool);

@@ -9,6 +9,7 @@ interface ConfigInterface {
   port: number;
   host: string;
   dialect: string;
+  ssl?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dialectOptions?: any;
 }

@@ -43,7 +43,11 @@ const options = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export const swaggerSpec = swaggerJsdoc(options);
 =======
 export const swaggerSpec = swaggerJsdoc(options);
 >>>>>>> 833906b (Initial MenyaLo backend setup:)
+=======
+export const swaggerSpec = swaggerJsdoc(options);
+>>>>>>> fbcfc4f (Chatbot integration and enhancements:)

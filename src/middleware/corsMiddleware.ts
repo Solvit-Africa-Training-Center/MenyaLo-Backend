@@ -11,7 +11,7 @@ export const corsOptions: cors.CorsOptions = {
       logger.info('Allowing undefined/null origin (server-to-server, mobile app, etc.)');
       return callback(null, true);
     }
-    
+
     // Handle empty string origins
     if (origin === '') {
       logger.info('Allowing empty string origin');
