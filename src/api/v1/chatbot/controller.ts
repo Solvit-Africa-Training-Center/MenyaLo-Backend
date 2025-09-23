@@ -6,6 +6,7 @@ import { getEmbedding, generateAnswer } from './AIservice';
 import { chunkText } from '../../../utils/chunker';
 import { infoLogger, errorLogger } from '../../../utils/logger';
 import { QueryTypes } from 'sequelize';
+import fetch from 'node-fetch';
 
 interface Document {
   id: number;
@@ -15,24 +16,45 @@ interface Document {
   created_at: Date;
 }
 
-// Format embedding for Postgres vector
+interface DuckDuckGoResponse {
+  AbstractText?: string;
+  RelatedTopics?: Array<{ Text?: string }>;
+}
+
 function formatEmbeddingForSQL(embedding: number[]): string {
   return `[${embedding.join(',')}]`;
 }
 
-// Fallback web search
 async function searchWeb(query: string): Promise<string> {
-  return `This is a web answer for: ${query}`;
+  try {
+    const response = await fetch(
+      `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json`,
+    );
+
+    const data = (await response.json()) as DuckDuckGoResponse;
+
+    if (data?.AbstractText && data.AbstractText.length > 0) {
+      return data.AbstractText;
+    }
+
+    if (data?.RelatedTopics && data.RelatedTopics.length > 0) {
+      return data.RelatedTopics[0].Text ?? 'No clear web definition found.';
+    }
+
+    return 'No clear web definition found.';
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    errorLogger(error, 'searchWeb');
+    return 'Failed to fetch from web.';
+  }
 }
 
-// Helper to log and send errors
 function logAndSendError(res: Response, err: unknown, context?: string): void {
   const error = err instanceof Error ? err : new Error(String(err));
   errorLogger(error, context);
   res.status(500).json({ error: error.message });
 }
 
-// Upload PDF and store chunks
 export async function uploadDocument(req: Request, res: Response): Promise<void> {
   try {
     if (!req.file) {
@@ -65,16 +87,12 @@ export async function uploadDocument(req: Request, res: Response): Promise<void>
     }
 
     res.status(201).json({ message: 'Uploaded successfully', chunks: inserted });
-    infoLogger(
-      `Uploaded ${inserted.length} chunks from file ${req.file.originalname}`,
-      'uploadDocument',
-    );
+    infoLogger(`Uploaded ${inserted.length} chunks from file ${req.file.originalname}`, 'uploadDocument');
   } catch (err: unknown) {
     logAndSendError(res, err, 'uploadDocument');
   }
 }
 
-// Query documents and generate answer
 export async function queryDocument(req: Request, res: Response): Promise<void> {
   try {
     const { question } = req.body;
@@ -83,67 +101,75 @@ export async function queryDocument(req: Request, res: Response): Promise<void> 
       return;
     }
 
+    // 1️⃣ Generate embedding for the question
     const qEmbedding = await getEmbedding(question);
     const formatted = formatEmbeddingForSQL(qEmbedding);
 
-    // Query documents based on embedding distance
+    // 2️⃣ Search database for relevant document chunks
     const result = await Database.database.query<Document & { distance: number }>(
       `
       SELECT id, content, embedding <#> $1::vector AS distance
       FROM documents
       ORDER BY distance
-      LIMIT 3`,
+      LIMIT 3
+      `,
       {
         bind: [formatted],
         type: QueryTypes.SELECT,
       },
     );
 
+    // 3️⃣ Prepare context for AI
     let context = result.map((r: Document & { distance: number }) => r.content).join('\n---\n');
     let source: 'database' | 'web' = 'database';
 
-    // If no result found, use web search as fallback
-    if (!result || result.length === 0) {
+    // 4️⃣ If no relevant context, use web search
+    if (!result.length || !context.trim()) {
       context = await searchWeb(question);
       source = 'web';
     }
 
-    // Generate answer using the context
-    const answer = await generateAnswer(context, question);
+    // 5️⃣ Build a clean AI prompt to ensure human-friendly answer
+    const prompt = `
+You are an AI assistant. Using the context below, answer the question clearly, concisely, and in simple human-friendly language.
+Context: ${context}
+Question: ${question}
+Answer:
+    `;
 
-    // Log query history into history table
+    // 6️⃣ Generate answer
+    const answer = await generateAnswer(prompt, question);
+
+    // 7️⃣ Save query & answer to history
     await Database.database.query(
-      `
-      INSERT INTO history (question, answer, source) 
-      VALUES ($1, $2, $3)
-    `,
+      'INSERT INTO history (question, answer, source) VALUES ($1, $2, $3)',
       {
         bind: [question, answer, source],
         type: QueryTypes.INSERT,
       },
     );
 
-    // Send the response back to the client
+    // 8️⃣ Send response
     res.json({
-      answer:
-        source === 'web'
-          ? `Not in database, but here’s an answer from the web:\n\n${answer}`
-          : answer,
+      answer: source === 'web'
+        ? `Not found in database. Here’s a web-sourced answer:\n\n${answer}`
+        : answer,
       documents: result,
       source,
     });
 
-    // Log successful query
     infoLogger(`Answered question: "${question}" (source: ${source})`, 'queryDocument');
   } catch (err: unknown) {
     logAndSendError(res, err, 'queryDocument');
   }
 }
 
-// Get query history
 export async function getQueryHistory(req: Request, res: Response): Promise<void> {
   try {
-    const result = await Database.database.query('SELECT * FROM history ORDER BY created_at DESC');
+    const result = await Database.database.query(
+      'SELECT * FROM history ORDER BY created_at DESC',
+      { type: QueryTypes.SELECT },
+    );
     res.json(result);
     infoLogger('Fetched query history', 'getQueryHistory');
   } catch (err: unknown) {
@@ -151,14 +177,12 @@ export async function getQueryHistory(req: Request, res: Response): Promise<void
   }
 }
 
-// Get all documents
+// -------------------- Get All Documents --------------------
 export async function getDocuments(req: Request, res: Response): Promise<void> {
   try {
     const result = await Database.database.query<Document>(
       'SELECT * FROM documents ORDER BY created_at DESC',
-      {
-        type: QueryTypes.SELECT,
-      },
+      { type: QueryTypes.SELECT },
     );
     res.json(result);
     infoLogger('Fetched all documents', 'getDocuments');
@@ -167,7 +191,7 @@ export async function getDocuments(req: Request, res: Response): Promise<void> {
   }
 }
 
-// Update document by ID
+// -------------------- Update Document --------------------
 export async function updateDocumentById(req: Request, res: Response): Promise<void> {
   try {
     const { id } = req.params;
@@ -186,7 +210,6 @@ export async function updateDocumentById(req: Request, res: Response): Promise<v
 
     if (!result || result.length === 0) {
       res.status(404).json({ error: 'Document not found' });
-      infoLogger(`Update failed: Document ${id} not found`, 'updateDocumentById');
       return;
     }
 
@@ -197,18 +220,20 @@ export async function updateDocumentById(req: Request, res: Response): Promise<v
   }
 }
 
-// Delete document by ID
+// -------------------- Delete Document --------------------
 export async function deleteDocumentById(req: Request, res: Response): Promise<void> {
   try {
     const { id } = req.params;
-    const result = await Database.database.query('DELETE FROM documents WHERE id=$1 RETURNING *', {
-      bind: [id],
-      type: QueryTypes.SELECT,
-    });
+    const result = await Database.database.query(
+      'DELETE FROM documents WHERE id=$1 RETURNING *',
+      {
+        bind: [id],
+        type: QueryTypes.SELECT,
+      },
+    );
 
     if (!result || result.length === 0) {
       res.status(404).json({ error: 'Document not found' });
-      infoLogger(`Delete failed: Document ${id} not found`, 'deleteDocumentById');
       return;
     }
 
