@@ -20,14 +20,14 @@ if (!fs.existsSync(uploadsDir)) {
   infoLogger(`Uploads directory created: ${uploadsDir}`, 'routes');
 }
 
+// Multer configuration for up to 10 PDF files
 const upload = multer({
   dest: uploadsDir,
   limits: {
-    fileSize: 100 * 1024 * 1024, // 100MB limit (recommended)
-    files: 1, // Only 1 file per request
+    fileSize: 100 * 1024 * 1024, // 100MB per file
+    files: 10, // Maximum 10 files per request
   },
   fileFilter: (req, file, cb) => {
-    
     if (file.mimetype === 'application/pdf') {
       cb(null, true);
     } else {
@@ -36,16 +36,16 @@ const upload = multer({
   },
 });
 
-router.post('/documents/upload', upload.single('file'), uploadDocument);
+router.post('/upload', upload.array('files', 10), uploadDocument);
 
-router.post('/documents/query', queryDocument);
+router.post('/query', queryDocument);
 
-router.get('/documents/query-history', getQueryHistory);
+router.get('/query-history', getQueryHistory);
 
-router.get('/documents', getDocuments);
+router.get('/', getDocuments);
 
-router.put('/documents/:id', updateDocumentById);
+router.put('/:id', updateDocumentById);
 
-router.delete('/documents/:id', deleteDocumentById);
+router.delete('/:id', deleteDocumentById);
 
 export default router;
