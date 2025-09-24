@@ -49,9 +49,6 @@
         multipart/form-data:
           schema:
             type: object
-            required:
-              - title
-              - content
             properties:
               title:
                 type: string

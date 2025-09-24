@@ -1,0 +1,330 @@
+components:
+  schemas:
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        userRole:
+          type: string
+          enum: ['citizen', 'organization', 'law-firm']
+        name:
+          type: string
+        bio:
+          type: string
+          nullable: true
+        occupation:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        teamSize:
+          type: integer
+          nullable: true
+        yearsOfExperience:
+          type: integer
+          nullable: true
+        caseResolved:
+          type: integer
+          nullable: true
+        successRate:
+          type: number
+          nullable: true
+        establishedAt:
+          type: string
+          format: date
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        role:
+          $ref: '#/components/schemas/Role'
+
+    ProfileWithUser:
+      allOf:
+        - $ref: '#/components/schemas/Profile'
+        - type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/UserProfile'
+
+    CitizenProfileWithUser:
+      allOf:
+        - $ref: '#/components/schemas/Profile'
+        - type: object
+          properties:
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                email:
+                  type: string
+                  format: email
+                username:
+                  type: string
+
+    OrganizationProfileWithUser:
+      allOf:
+        - $ref: '#/components/schemas/Profile'
+        - type: object
+          properties:
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                email:
+                  type: string
+                  format: email
+                address:
+                  type: string
+
+    LawFirmProfileWithUser:
+      allOf:
+        - $ref: '#/components/schemas/Profile'
+        - type: object
+          properties:
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                email:
+                  type: string
+                  format: email
+                address:
+                  type: string
+
+    CreateCitizenProfile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Citizen's full name
+        occupation:
+          type: string
+          description: Citizen's occupation
+        bio:
+          type: string
+          description: Citizen's biography
+        phoneNumber:
+          type: string
+          description: Citizen's phone number
+        imageUrl:
+          type: string
+          format: uri
+          description: Profile image URL
+
+    CreateOrganizationProfile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Organization name
+        imageUrl:
+          type: string
+          format: uri
+          description: Organization logo URL
+        bio:
+          type: string
+          description: Organization description
+        website:
+          type: string
+          format: uri
+          description: Organization website
+        phoneNumber:
+          type: string
+          description: Organization phone number
+        teamSize:
+          type: integer
+          minimum: 1
+          description: Number of team members
+        yearsOfExperience:
+          type: integer
+          minimum: 0
+          description: Years of experience
+        establishedAt:
+          type: string
+          format: date
+          description: Date established
+
+    CreateLawFirmProfile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Law firm name
+        imageUrl:
+          type: string
+          format: uri
+          description: Law firm logo URL
+        bio:
+          type: string
+          description: Law firm description
+        website:
+          type: string
+          format: uri
+          description: Law firm website
+        phoneNumber:
+          type: string
+          description: Law firm phone number
+        teamSize:
+          type: integer
+          minimum: 1
+          description: Number of lawyers
+        yearsOfExperience:
+          type: integer
+          minimum: 0
+          description: Years of experience
+        caseResolved:
+          type: integer
+          minimum: 0
+          description: Number of cases resolved
+        successRate:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Success rate percentage
+        establishedAt:
+          type: string
+          format: date
+          description: Date established
+
+    UpdateCitizenProfile:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Citizen's full name
+        occupation:
+          type: string
+          description: Citizen's occupation
+        bio:
+          type: string
+          description: Citizen's biography
+        phoneNumber:
+          type: string
+          description: Citizen's phone number
+        imageUrl:
+          type: string
+          format: uri
+          description: Profile image URL
+
+    UpdateOrganizationProfile:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Organization name
+        imageUrl:
+          type: string
+          format: uri
+          description: Organization logo URL
+        bio:
+          type: string
+          description: Organization description
+        website:
+          type: string
+          format: uri
+          description: Organization website
+        phoneNumber:
+          type: string
+          description: Organization phone number
+        teamSize:
+          type: integer
+          minimum: 1
+          description: Number of team members
+        yearsOfExperience:
+          type: integer
+          minimum: 0
+          description: Years of experience
+        establishedAt:
+          type: string
+          format: date
+          description: Date established
+
+    UpdateLawFirmProfile:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Law firm name
+        imageUrl:
+          type: string
+          format: uri
+          description: Law firm logo URL
+        bio:
+          type: string
+          description: Law firm description
+        website:
+          type: string
+          format: uri
+          description: Organization website
+        phoneNumber:
+          type: string
+          description: Law firm phone number
+        teamSize:
+          type: integer
+          minimum: 1
+          description: Number of lawyers
+        yearsOfExperience:
+          type: integer
+          minimum: 0
+          description: Years of experience
+        caseResolved:
+          type: integer
+          minimum: 0
+          description: Number of cases resolved
+        successRate:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Success rate percentage
+        establishedAt:
+          type: string
+          format: date
+          description: Date established
