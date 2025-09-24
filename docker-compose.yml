@@ -9,7 +9,7 @@ services:
     env_file:
       - .env.docker
     ports:
-      - '5001:5001'
+      - '5001:5000'
     volumes:
       - ./:/usr/src/app/
       - node_modules:/usr/src/app/node_modules
@@ -83,8 +83,12 @@ services:
 
 
 volumes:
+  pgdata:
+  redisdata:
   node_modules:
+  pgadmin_data:
 
 networks:
   menyalo-network:
     driver: bridge
+
