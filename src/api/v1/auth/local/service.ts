@@ -9,6 +9,7 @@ import {
 } from '../../../../utils/helper';
 import { errorLogger, logger } from '../../../../utils/logger';
 import { IRequestUser } from '../../../../middleware/unifiedAuthMiddleware';
+import { CreateCitizenInterface, CreateOrganizationInterface } from '../../users/users';
 
 export class AuthService {
   data: CreateCitizenInterface | CreateOrganizationInterface;

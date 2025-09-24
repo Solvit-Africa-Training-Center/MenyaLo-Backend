@@ -1,3 +1,5 @@
+import { IRequestUser } from '../../../middleware/unifiedAuthMiddleware';
+
 interface UserInterface {
   id: string;
   name?: string;
@@ -22,7 +24,35 @@ type CreateOrganizationInterface = Omit<
 >;
 
 type UpdateCitizenInterface = Partial<CreateCitizenInterface>;
-type UpdateOrganizationInterface = Partial<CreateOrganizationfaceInterface>;
+type UpdateOrganizationInterface = Partial<CreateOrganizationInterface>;
+type UpdateUserInterface = Partial<Omit<UserInterface, 'id' | 'createdAt' | 'password'>>;
+
 interface GetAllUsers {
   users: UserInterface[];
 }
+
+interface UserRequestInterface extends IRequestUser {
+  body: UpdateUserInterface;
+  params: {
+    id: string;
+  };
+}
+
+interface UpdateUserRequestInterface extends IRequestUser {
+  body: UpdateUserInterface;
+  params: {
+    id: string;
+  };
+}
+
+export {
+  UserInterface,
+  CreateCitizenInterface,
+  CreateOrganizationInterface,
+  UpdateCitizenInterface,
+  UpdateOrganizationInterface,
+  UpdateUserInterface,
+  GetAllUsers,
+  UserRequestInterface,
+  UpdateUserRequestInterface,
+};
