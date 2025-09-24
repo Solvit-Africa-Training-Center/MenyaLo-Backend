@@ -12,7 +12,7 @@ import {
 } from './controller';
 import { infoLogger } from '../../../utils/logger'; 
 
-const router = Router();
+const chatbotRouter = Router();
 
 const uploadsDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -36,16 +36,16 @@ const upload = multer({
   },
 });
 
-router.post('/upload', upload.array('files', 10), uploadDocument);
+chatbotRouter.post('/upload', upload.array('files', 10), uploadDocument);
 
-router.post('/query', queryDocument);
+chatbotRouter.post('/query', queryDocument);
 
-router.get('/query-history', getQueryHistory);
+chatbotRouter.get('/query-history', getQueryHistory);
 
-router.get('/', getDocuments);
+chatbotRouter.get('/', getDocuments);
 
-router.put('/:id', updateDocumentById);
+chatbotRouter.put('/:id', updateDocumentById);
 
-router.delete('/:id', deleteDocumentById);
+chatbotRouter.delete('/:id', deleteDocumentById);
 
-export default router;
+export default chatbotRouter;

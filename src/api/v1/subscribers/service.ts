@@ -124,15 +124,7 @@ export class SubscriptionService {
         email,
         userName?.username || userName?.name || 'User',
         'unsubscribe',
-<<<<<<< HEAD
-<<<<<<< HEAD
         'You have been unsubscribed from Menyalo',
-=======
-        "You've been unsubscribed from Menyalo",
->>>>>>> b433c63 (removed CORS)
-=======
-        'You\'ve been unsubscribed from Menyalo',
->>>>>>> 59a3cbf (rebased the main branch)
       );
     } catch (error) {
       const { message, stack } = error as Error;
