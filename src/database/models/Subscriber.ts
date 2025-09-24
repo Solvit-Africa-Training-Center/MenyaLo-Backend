@@ -24,7 +24,11 @@ export class Subscriber
   public deletedAt: null = null;
 
   public toJSON(): object | SubscriberAttributes {
-    return { ...this.get() };
+    return {
+      ...this.get(),
+      updatedAt: undefined,
+      deletedAt: undefined,
+    };
   }
 }
 

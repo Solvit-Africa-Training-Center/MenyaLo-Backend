@@ -17,17 +17,18 @@ Thumbs.db
 <<<<<<< HEAD
 <<<<<<< HEAD
 .history
+<<<<<<< HEAD
 =======
 >>>>>>> 833906b (Initial MenyaLo backend setup:)
 =======
 .history
 >>>>>>> fbcfc4f (Chatbot integration and enhancements:)
 
+=======
+>>>>>>> cb2d068b796c5b8f0f3685957322117daa71783b
 # Test files
 **/*.test.ts
-**/*.test.js
 **/*.spec.ts
-**/*.spec.js
 src/__tests__
 
 # Development files

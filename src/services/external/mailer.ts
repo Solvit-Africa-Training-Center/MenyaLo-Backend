@@ -19,32 +19,41 @@ const transporter = nodemailer.createTransport({
 
 const sendMail = (email: string, name: string, fileName: string, subject: string): void => {
   const token = generateUnsubscribeToken(email);
-  const unsubscribeLink = `http://localhost:5001/api/v1/unsubscribe?token=${token}`;
+  const unsubscribeLink = `http://localhost:5001/api/v1/subscribers/unsubscribe?token=${token}`;
 
-  const templatePath = path.join(__dirname, '../../views', `email-templates/${fileName}.ejs`);
+  const templatePath = path.join(__dirname, '../../../views', `email-templates/${fileName}.ejs`);
 
-  ejs.renderFile(templatePath, { name: name as string, unsubscribeLink }, (err) => {
-    if (err) {
-      return errorLogger(err, 'Error rendering EJS:');
-    }
-
-    const mailOptions = {
-      from: 'The Best Blog <process.env.SMTP_EMAIL>',
-      to: email,
-      subject: subject as string,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return errorLogger(error, 'Error sending email:');
+  ejs.renderFile(
+    templatePath,
+    {
+      name: name as string,
+      email: email as string,
+      unsubscribeLink,
+    },
+    (err, html) => {
+      if (err) {
+        return errorLogger(err, 'Error rendering EJS:');
       }
-      logger.info('Email sent:', info.response);
-    });
-  });
+
+      const mailOptions = {
+        from: `MenyaLo <${process.env.SMTP_EMAIL}>`,
+        to: email,
+        subject: subject as string,
+        html,
+      };
+
+      transporter.sendMail(mailOptions, (error) => {
+        if (error) {
+          return errorLogger(error, 'Error sending email:');
+        }
+        logger.info('Email successfully sent.');
+      });
+    },
+  );
 };
 
 const sendMailInBulk = (email: string[], fileName: string, subject: string): void => {
-  const templatePath = path.join(__dirname, '../../views', `email-templates/${fileName}.ejs`);
+  const templatePath = path.join(__dirname, '../../../views', `email-templates/${fileName}.ejs`);
 
   ejs.renderFile(templatePath, (err, html) => {
     if (err) {
@@ -52,17 +61,17 @@ const sendMailInBulk = (email: string[], fileName: string, subject: string): voi
     }
 
     const mailOptions = {
-      from: 'The Best Blog <process.env.SMTP_EMAIL>',
+      from: `MenyaLo <${process.env.SMTP_EMAIL}>`,
       to: email,
       subject: subject as string,
       html,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, (error) => {
       if (error) {
         return errorLogger(error, 'Error sending email:');
       }
-      logger.info('Email sent:', info.response);
+      logger.info('Email successfully sent.');
     });
   });
 };

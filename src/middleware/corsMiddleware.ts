@@ -6,18 +6,18 @@ export const corsOptions: cors.CorsOptions = {
   origin(origin, callback) {
     logger.info('Request origin:', origin);
 
-    // Handle undefined/null origins explicitly
     if (origin === undefined || origin === null) {
       logger.info('Allowing undefined/null origin (server-to-server, mobile app, etc.)');
       return callback(null, true);
     }
-
-    // Handle empty string origins
     if (origin === '') {
       logger.info('Allowing empty string origin');
       return callback(null, true);
     }
+<<<<<<< HEAD
     // Check allowed origins
+=======
+>>>>>>> cb2d068b796c5b8f0f3685957322117daa71783b
     if (allowedOrigins.includes(origin)) {
       logger.info('Origin allowed:', origin);
       return callback(null, true);

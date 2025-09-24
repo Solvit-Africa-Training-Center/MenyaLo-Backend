@@ -1,8 +1,294 @@
- <%- include('includes/header') %>
-<!-- Subscribe -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to MenyaLo</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+      }
+
+      .email-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        margin: 20px auto;
+        max-width: 600px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      h1 {
+        color: #1a445f;
+        margin-top: 0;
+        font-weight: 600;
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+
+      p {
+        margin-bottom: 20px;
+        font-size: 16px;
+        color: #444;
+        line-height: 1.6;
+      }
+
+      .button {
+        display: inline-block;
+        background-color: #1a445f;
+        color: white;
+        padding: 14px 30px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 500;
+        margin: 15px 0;
+        transition: all 0.3s ease;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .button:hover {
+        background-color: #0d2e44;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .signature {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eaeaea;
+        flex-wrap: wrap;
+      }
+
+      .info {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .name {
+        font-family: Castoro;
+        letter-spacing: 2px;
+        font-weight: bold;
+        color: #1a445f;
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
+
+      .title {
+        color: #666;
+        margin-bottom: 10px;
+        font-size: 15px;
+      }
+
+      .contact {
+        color: #555;
+        font-size: 15px;
+        margin-bottom: 3px;
+      }
+
+      .logo {
+        max-width: 80px;
+        height: auto;
+      }
+      
+      .social {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .social a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        border: 1px solid #e0e0e0;
+      }
+
+      .social a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Specific colors for each platform */
+      .social a:nth-child(1) {
+        background-color: #0077b5;
+        border-color: #0077b5;
+      } /* LinkedIn */
+      .social a:nth-child(2) {
+        background-color: #000000;
+        border-color: #000000;
+      } /* X */
+      .social a:nth-child(3) {
+        background-color: #e1306c;
+        border-color: #e1306c;
+      } /* Instagram */
+      .social a:nth-child(4) {
+        background-color: #25d366;
+        border-color: #25d366;
+      } /* WhatsApp */
+      .social a:nth-child(5) {
+        background-color: #1877f2;
+        border-color: #1877f2;
+      } /* Facebook */
+
+      /* Responsive design */
+      @media only screen and (max-width: 650px) {
+        body {
+          padding: 15px;
+        }
+
+        .email-container {
+          padding: 25px;
+          margin: 10px auto;
+          border-radius: 6px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+
+        p {
+          font-size: 15px;
+        }
+
+        .button {
+          display: block;
+          width: 100%;
+          padding: 14px 20px;
+          margin: 20px 0;
+        }
+
+        .signature {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .info {
+          margin-bottom: 20px;
+          width: 100%;
+        }
+
+        .logo {
+          align-self: center;
+          margin-top: 15px;
+        }
+
+        .social {
+          justify-content: center;
+          width: 100%;
+          margin-top: 20px;
+        }
+      }
+
+      @media only screen and (max-width: 400px) {
+        body {
+          padding: 10px;
+        }
+
+        .email-container {
+          padding: 20px 15px;
+        }
+
+        h1 {
+          font-size: 22px;
+        }
+
+        .social a {
+          width: 36px;
+          height: 36px;
+          font-size: 14px;
+        }
+
+        .name {
+          font-size: 17px;
+        }
+
+        .title,
+        .contact {
+          font-size: 14px;
+        }
+      }
+
+      /* For email clients that need max-width support */
+      @media only screen and (max-width: 480px) {
+        .button {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+      }
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        font-size: 12px;
+        color: #999;
+      }
+      .footer a {
+        color: #007bff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
     <div class="email-container">
-        <h1>Welcome Aboard 🎉</h1>
-        <p>Thank you for subscribing to MenyaLo! You'll now receive updates, insights, and helpful resources directly to your inbox.</p>
-        <a href="YOUR_DASHBOARD_LINK" class="button">Visit Dashboard</a>
-       
- <%- include('includes/footer') %>
+      <h1>Welcome Aboard, <%= name %>! 🎉</h1>
+      <p>
+        Thank you for subscribing to MenyaLo! You'll now receive updates, insights, and helpful
+        resources directly to your inbox.
+      </p>
+      <a href="#" class="button">Visit Dashboard</a>
+      <div class="signature">
+        <div class="info">
+          <div class="name">MenyaLo</div>
+          <div class="title">Brand & Communications Manager</div>
+          <div><a href="#">Read our Impact Snapshot</a></div>
+          <div class="social">
+            <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" title="X"><i class="fab fa-x-twitter"></i></a>
+            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          </div>
+        </div>
+        <img
+          src="https://res.cloudinary.com/dyxlv7j5z/image/upload/v1758592048/logo_lhff6w.png"
+          alt="MenyaLo Logo"
+          class="logo"
+        />
+      </div>
+      <div class="footer">
+        <p><a href="<%= unsubscribeLink %>">Unsubscribe</a></p>
+        <p>© 2025 MenyaLo. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>

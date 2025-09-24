@@ -30,6 +30,7 @@ services:
   postgres:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     image: pgvector/pgvector:pg16
 =======
     image: postgres:16.9-alpine
@@ -37,6 +38,9 @@ services:
 =======
     image: pgvector/pgvector:pg16
 >>>>>>> fbcfc4f (Chatbot integration and enhancements:)
+=======
+    image: pgvector/pgvector:pg16
+>>>>>>> cb2d068b796c5b8f0f3685957322117daa71783b
     container_name: menyalo_postgres
     env_file:
       - .env.docker

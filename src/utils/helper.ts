@@ -6,13 +6,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { errorLogger, logger } from './logger';
 config();
 
-export const generateSlug = (title: string): string =>
-  title
+export const generateSlug = (title?: string): string => {
+  if (!title) {
+    title = '' as string;
+    return title;
+  }
+  return title
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
+};
 
 export const hashPassword = async (password: string): Promise<string> =>
   await bcrypt.hash(password, 10);
