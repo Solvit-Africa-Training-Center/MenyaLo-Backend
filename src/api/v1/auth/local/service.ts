@@ -54,7 +54,7 @@ export class AuthService {
       }
 
       const user = await Database.User.create({
-        username,
+        username: '@' + username,
         email,
         password: await hashPassword(password),
         roleId: role?.id,
