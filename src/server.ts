@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 config();
 
 const server = createServer();
-const port = parseInt(process.env.PORT as string);
+const port = parseInt(process.env.PORT as string) || 5001;
 const env = process.env.NODE_ENV as string;
 
 Database.database

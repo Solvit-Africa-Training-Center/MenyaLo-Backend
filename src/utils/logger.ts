@@ -98,7 +98,8 @@ export const logPerformance = (label: string, startTime: [number, number]): void
 
 export const logStartup = (port: number, env: string): void => {
   logger.info(`Server started on port ${port} in ${env} mode`);
-  logger.info(`Local: http://localhost:${port}`);
+  logger.info(`Local: http://localhost:${port}/health`);
+  logger.info(`Local: http://localhost:${port}/docs`);
   logger.info('Press CTRL+C to stop server');
 };
 
