@@ -14,7 +14,7 @@ if (env === 'development') {
     database: process.env.DEV_DATABASE,
     password: process.env.DEV_PASSWORD,
     host: process.env.DEV_HOST,
-    port: process.env.DEV_PORT || 5432,
+    port: parseInt(process.env.DEV_PORT || 5432),
     dialect: 'postgres',
     ssl: process.env.DEV_SSLMODE,
     dialectOptions: {
@@ -33,7 +33,7 @@ if (env === 'development') {
     database: process.env.TEST_DATABASE,
     password: process.env.TEST_PASSWORD,
     host: process.env.TEST_HOST,
-    port: process.env.TEST_PORT || 5432,
+    port: parseInt(process.env.TEST_PORT || 5432),
     dialect: 'postgres',
     ssl: process.env.TEST_SSLMODE,
     dialectOptions: {
@@ -55,7 +55,7 @@ if (env === 'development') {
     password: PROD_PASSWORD,
     database: PROD_DATABASE,
     host: PROD_HOST,
-    port: parseInt(PROD_PORT) || 5432,
+    port: parseInt(PROD_PORT) || 5433,
     ssl: PROD_SSLMODE === 'true',
     dialectOptions: {
       ssl:

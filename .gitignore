@@ -9,3 +9,6 @@ logs/
 __test__
 uploads/
 .history
+src/database/config/
+tsconfig.json
+src/database/migrations/disabled/

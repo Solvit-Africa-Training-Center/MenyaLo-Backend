@@ -16,6 +16,7 @@ import specialtyRoutes from './specialties/routes';
 import preferenceRoutes from './domainPreferences/routes';
 import lawRoutes from './laws/routes';
 import articleRoutes from './articles/routes';
+import referenceRoutes from './references/routes';
 
 const router: Router = express.Router();
 
@@ -36,5 +37,6 @@ router.use('/preferences', preferenceRoutes);
 router.use('/laws', lawRoutes);
 router.use('/laws', articleRoutes);
 router.use('/documents', chatBotRoutes);
+router.use('/laws/:lawId/references', referenceRoutes);
 
 export default router;

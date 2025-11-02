@@ -1,0 +1,169 @@
+components:
+  schemas:
+    Reference:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '123e4567-e89b-12d3-a456-426614174000'
+        lawId:
+          type: string
+          format: uuid
+          example: '987fcdeb-51a2-43d1-9f12-345678901234'
+        type:
+          type: string
+          enum: ['Law', 'Article', 'Commentary']
+          example: 'Law'
+        title:
+          type: stringa
+          minLength: 3
+          maxLength: 500
+          example: 'Related Law on Contract Enforcement'
+        citation:
+          type: string
+          minLength: 3
+          maxLength: 500
+          example: 'Law N° 45/2020 of 15/08/2020'
+        url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 2000
+          example: 'https://www.gazette.gov.rw/law/45-2020'
+        notes:
+          type: string
+          nullable: true
+          maxLength: 5000
+          example: 'This law provides additional context on contract disputes related to Article 12.'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00.000Z'
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+
+    LawInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '987fcdeb-51a2-43d1-9f12-345678901234'
+        lawNumber:
+          type: string
+          example: 'N° 01/2024'
+        title:
+          type: string
+          example: 'Law on Cybersecurity and Data Protection'
+
+    ReferenceWithLaw:
+      allOf:
+        - $ref: '#/components/schemas/Reference'
+        - type: object
+          properties:
+            law:
+              $ref: '#/components/schemas/LawInfo'
+
+    CreateReference:
+      type: object
+      required:
+        - type
+        - title
+        - citation
+      properties:
+        type:
+          type: string
+          enum: ['Law', 'Article', 'Commentary']
+          description: Type of reference
+          example: 'Law'
+        title:
+          type: string
+          description: Title of the reference
+          minLength: 3
+          maxLength: 500
+          example: 'Related Law on Contract Enforcement'
+        citation:
+          type: string
+          description: Citation or reference identifier
+          minLength: 3
+          maxLength: 500
+          example: 'Law N° 45/2020 of 15/08/2020'
+        url:
+          type: string
+          format: uri
+          description: URL to the reference document
+          maxLength: 2000
+          nullable: true
+          example: 'https://www.gazette.gov.rw/law/45-2020'
+        notes:
+          type: string
+          description: Additional notes or commentary
+          maxLength: 5000
+          nullable: true
+          example: 'This law provides additional context on contract disputes.'
+
+    UpdateReference:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ['Law', 'Article', 'Commentary']
+          description: Type of reference
+          example: 'Article'
+        title:
+          type: string
+          description: Title of the reference
+          minLength: 3
+          maxLength: 500
+          example: 'Updated Reference Title'
+        citation:
+          type: string
+          description: Citation or reference identifier
+          minLength: 3
+          maxLength: 500
+          example: 'Law N° 45/2020 of 15/08/2020 (Amended)'
+        url:
+          type: string
+          format: uri
+          description: URL to the reference document
+          maxLength: 2000
+          nullable: true
+          example: 'https://www.gazette.gov.rw/law/45-2020-amended'
+        notes:
+          type: string
+          description: Additional notes or commentary
+          maxLength: 5000
+          nullable: true
+          example: 'Updated notes with additional context.'
+
+    ErrorResponse:
+      type: object
+      properties:
+        data:
+          oneOf:
+            - type: null
+            - type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Validation error'
+                stack:
+                  type: string
+                  example: 'Error stack trace...'
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'An error occurred'
+        status:
+          type: integer
+          example: 500

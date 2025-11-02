@@ -1,0 +1,513 @@
+/laws/{lawId}/references:
+  get:
+    tags:
+      - References
+    summary: Get all references for a specific law
+    description: Retrieves all references associated with a specific law. References can be filtered by type (Law, Article, Commentary). Results are ordered by creation date in descending order.
+    parameters:
+      - name: lawId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the law
+        example: '987fcdeb-51a2-43d1-9f12-345678901234'
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: ['Law', 'Article', 'Commentary']
+        description: Filter references by type
+        example: 'Law'
+    responses:
+      '200':
+        description: References retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ReferenceWithLaw'
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: 'References successfully retrieved'
+                status:
+                  type: integer
+                  example: 200
+            examples:
+              multipleReferences:
+                value:
+                  data:
+                    - id: '123e4567-e89b-12d3-a456-426614174000'
+                      lawId: '987fcdeb-51a2-43d1-9f12-345678901234'
+                      type: 'Law'
+                      title: 'Related Law on Contract Enforcement'
+                      citation: 'Law N° 45/2020 of 15/08/2020'
+                      url: 'https://www.gazette.gov.rw/law/45-2020'
+                      notes: 'Provides context on contract disputes'
+                      createdAt: '2024-01-15T10:30:00.000Z'
+                      updatedAt: '2024-01-15T10:30:00.000Z'
+                      deletedAt: null
+                      law:
+                        id: '987fcdeb-51a2-43d1-9f12-345678901234'
+                        lawNumber: 'N° 01/2024'
+                        title: 'Law on Cybersecurity and Data Protection'
+                    - id: '223e4567-e89b-12d3-a456-426614174001'
+                      lawId: '987fcdeb-51a2-43d1-9f12-345678901234'
+                      type: 'Commentary'
+                      title: 'Legal Commentary on Article 5'
+                      citation: 'Rwanda Law Review, Vol. 12, 2023'
+                      url: null
+                      notes: 'Academic analysis of enforcement provisions'
+                      createdAt: '2024-01-14T09:20:00.000Z'
+                      updatedAt: '2024-01-14T09:20:00.000Z'
+                      deletedAt: null
+                      law:
+                        id: '987fcdeb-51a2-43d1-9f12-345678901234'
+                        lawNumber: 'N° 01/2024'
+                        title: 'Law on Cybersecurity and Data Protection'
+                  success: true
+                  message: 'References successfully retrieved'
+                  status: 200
+              noReferences:
+                value:
+                  data: []
+                  success: true
+                  message: 'No references found'
+                  status: 200
+      '404':
+        description: Law not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            example:
+              data: null
+              success: false
+              message: 'Law not found'
+              status: 404
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  post:
+    tags:
+      - References
+    summary: Create a new reference for a specific law
+    description: Creates a new reference (Law, Article, or Commentary) associated with a specific law. Requires authentication.
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: lawId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the law
+        example: '987fcdeb-51a2-43d1-9f12-345678901234'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateReference'
+          examples:
+            lawReference:
+              summary: Law reference
+              value:
+                type: 'Law'
+                title: 'Related Law on Contract Enforcement'
+                citation: 'Law N° 45/2020 of 15/08/2020'
+                url: 'https://www.gazette.gov.rw/law/45-2020'
+                notes: 'Provides additional context on contract disputes'
+            articleReference:
+              summary: Article reference
+              value:
+                type: 'Article'
+                title: 'Constitutional Reference to Privacy Rights'
+                citation: 'Constitution of Rwanda, Article 23'
+                url: 'https://www.constitution.gov.rw/article-23'
+                notes: 'Constitutional foundation for data protection'
+            commentaryReference:
+              summary: Commentary reference
+              value:
+                type: 'Commentary'
+                title: 'Legal Analysis of Enforcement Mechanisms'
+                citation: 'Rwanda Law Review, Vol. 12, 2023, pp. 45-67'
+                url: null
+                notes: 'Academic analysis by Professor John Doe'
+    responses:
+      '201':
+        description: Reference created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/Reference'
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: 'Reference successfully created'
+                status:
+                  type: integer
+                  example: 201
+            example:
+              data:
+                id: '123e4567-e89b-12d3-a456-426614174000'
+                lawId: '987fcdeb-51a2-43d1-9f12-345678901234'
+                type: 'Law'
+                title: 'Related Law on Contract Enforcement'
+                citation: 'Law N° 45/2020 of 15/08/2020'
+                url: 'https://www.gazette.gov.rw/law/45-2020'
+                notes: 'Provides additional context on contract disputes'
+                createdAt: '2024-01-15T10:30:00.000Z'
+                updatedAt: '2024-01-15T10:30:00.000Z'
+                deletedAt: null
+              success: true
+              message: 'Reference successfully created'
+              status: 201
+      '400':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            example:
+              data:
+                message: 'Validation failed'
+                details:
+                  - field: 'type'
+                    message: 'Type must be one of: Law, Article, Commentary'
+              success: false
+              message: 'Validation error'
+              status: 400
+      '401':
+        description: Unauthorized - Authentication required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            example:
+              data: null
+              success: false
+              message: 'Authentication required'
+              status: 401
+      '404':
+        description: Law not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            example:
+              data: null
+              success: false
+              message: 'Law not found'
+              status: 404
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/laws/{lawId}/references/{id}:
+  get:
+    tags:
+      - References
+    summary: Get a reference by ID for a specific law
+    description: Retrieves a single reference by its ID within the context of a specific law, including the associated law information.
+    parameters:
+      - name: lawId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the law
+        example: '987fcdeb-51a2-43d1-9f12-345678901234'
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the reference
+        example: '123e4567-e89b-12d3-a456-426614174000'
+    responses:
+      '200':
+        description: Reference retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/ReferenceWithLaw'
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: 'Reference successfully retrieved'
+                status:
+                  type: integer
+                  example: 200
+            example:
+              data:
+                id: '123e4567-e89b-12d3-a456-426614174000'
+                lawId: '987fcdeb-51a2-43d1-9f12-345678901234'
+                type: 'Law'
+                title: 'Related Law on Contract Enforcement'
+                citation: 'Law N° 45/2020 of 15/08/2020'
+                url: 'https://www.gazette.gov.rw/law/45-2020'
+                notes: 'Provides additional context on contract disputes'
+                createdAt: '2024-01-15T10:30:00.000Z'
+                updatedAt: '2024-01-15T10:30:00.000Z'
+                deletedAt: null
+                law:
+                  id: '987fcdeb-51a2-43d1-9f12-345678901234'
+                  lawNumber: 'N° 01/2024'
+                  title: 'Law on Cybersecurity and Data Protection'
+              success: true
+              message: 'Reference successfully retrieved'
+              status: 200
+      '404':
+        description: Law or Reference not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            examples:
+              lawNotFound:
+                value:
+                  data: null
+                  success: false
+                  message: 'Law not found'
+                  status: 404
+              referenceNotFound:
+                value:
+                  data: null
+                  success: false
+                  message: 'Reference not found'
+                  status: 404
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  patch:
+    tags:
+      - References
+    summary: Update a reference by ID for a specific law
+    description: Updates an existing reference. All fields are optional. Only provided fields will be updated. Requires authentication.
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: lawId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the law
+        example: '987fcdeb-51a2-43d1-9f12-345678901234'
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the reference
+        example: '123e4567-e89b-12d3-a456-426614174000'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateReference'
+          examples:
+            updateTitle:
+              summary: Update title only
+              value:
+                title: 'Updated Reference Title'
+            updateTypeAndNotes:
+              summary: Update type and notes
+              value:
+                type: 'Commentary'
+                notes: 'Updated commentary with new legal analysis'
+            updateUrl:
+              summary: Update URL
+              value:
+                url: 'https://www.gazette.gov.rw/law/45-2020-amended'
+    responses:
+      '200':
+        description: Reference updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: integer
+                  description: Number of affected rows
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: 'Reference successfully updated'
+                status:
+                  type: integer
+                  example: 200
+            example:
+              data: [1]
+              success: true
+              message: 'Reference successfully updated'
+              status: 200
+      '400':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            example:
+              data:
+                message: 'Validation failed'
+                details:
+                  - field: 'url'
+                    message: 'URL must be a valid URL'
+              success: false
+              message: 'Validation error'
+              status: 400
+      '401':
+        description: Unauthorized - Authentication required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Law or Reference not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            examples:
+              lawNotFound:
+                value:
+                  data: null
+                  success: false
+                  message: 'Law not found'
+                  status: 404
+              referenceNotFound:
+                value:
+                  data: null
+                  success: false
+                  message: 'Reference not found'
+                  status: 404
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  delete:
+    tags:
+      - References
+    summary: Delete a reference by ID for a specific law (soft delete)
+    description: Soft deletes a reference by setting the deletedAt timestamp. The reference remains in the database but is excluded from queries. Requires authentication.
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: lawId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the law
+        example: '987fcdeb-51a2-43d1-9f12-345678901234'
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID of the reference
+        example: '123e4567-e89b-12d3-a456-426614174000'
+    responses:
+      '200':
+        description: Reference deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: integer
+                  description: Number of deleted rows
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: 'Reference successfully deleted'
+                status:
+                  type: integer
+                  example: 200
+            example:
+              data: 1
+              success: true
+              message: 'Reference successfully deleted'
+              status: 200
+      '401':
+        description: Unauthorized - Authentication required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Law or Reference not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            examples:
+              lawNotFound:
+                value:
+                  data: null
+                  success: false
+                  message: 'Law not found'
+                  status: 404
+              referenceNotFound:
+                value:
+                  data: null
+                  success: false
+                  message: 'Reference not found'
+                  status: 404
+      '500':
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'

@@ -1,6 +1,8 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import { Origin } from './Origin';
 import { Domain } from './Domain';
+import { Article } from './Article';
+import { Reference } from './Reference'; 
 
 type LawStatus = 'Active' | 'Amended' | 'Repealed';
 type LawLanguage = 'EN' | 'RW' | 'FR';
@@ -43,7 +45,7 @@ export class Law
   public updatedAt!: Date;
   public deletedAt?: Date | null;
 
-  static associate(models: { Origin: typeof Origin; Domain: typeof Domain }): void {
+  static associate(models: { Origin: typeof Origin; Domain: typeof Domain, Article: typeof Article, Reference: typeof Reference }): void {
     Law.belongsTo(models.Origin, {
       foreignKey: 'originId',
       as: 'origin',
@@ -53,6 +55,17 @@ export class Law
       foreignKey: 'domainId',
       as: 'domain',
     });
+
+    Law.hasMany(models.Article, {
+    foreignKey: 'lawId',
+    as: 'articles',
+  });
+
+
+  Law.hasMany(models.Reference, {
+    foreignKey: 'lawId',
+    as: 'references',
+  });
   }
 
   public toJSON(): object | LawAttributes {
