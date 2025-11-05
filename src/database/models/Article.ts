@@ -1,5 +1,6 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import { Law } from './Law';
+import { Reference } from './Reference';
 
 interface ArticleAttributes {
   id: string;
@@ -29,10 +30,15 @@ export class Article
   public updatedAt!: Date;
   public deletedAt?: Date | null;
 
-  static associate(models: { Law: typeof Law }): void {
+  static associate(models: { Law: typeof Law, Reference: typeof Reference }): void {
     Article.belongsTo(models.Law, {
       foreignKey: 'lawId',
       as: 'law',
+    });
+
+    Article.hasMany(models.Reference, {
+      foreignKey: 'articleId',
+      as: 'references',
     });
   }
 

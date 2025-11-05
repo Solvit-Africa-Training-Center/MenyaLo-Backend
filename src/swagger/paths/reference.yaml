@@ -1,0 +1,204 @@
+/references:
+  get:
+    tags:
+      - References
+    summary: Get all references
+    description: Get references filtered by lawId, articleId, referenceId, or type
+    parameters:
+      - name: lawId
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: Filter by law ID
+      - name: articleId
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: Filter by article ID
+      - name: referenceId
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: Filter by parent reference ID (get commentaries)
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: ['Law', 'Article', 'Commentary']
+        description: Filter by reference type
+    responses:
+      '200':
+        description: References retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ReferenceWithRelations'
+                success:
+                  type: boolean
+                message:
+                  type: string
+                status:
+                  type: integer
+      '500':
+        description: Internal server error
+
+  post:
+    tags:
+      - References
+    summary: Create a reference
+    description: Create a reference on a law, article, or another reference. Provide ONE of lawId, articleId, or referenceId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateReference'
+    responses:
+      '201':
+        description: Reference created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/Reference'
+                success:
+                  type: boolean
+                message:
+                  type: string
+                status:
+                  type: integer
+      '400':
+        description: Validation error
+      '404':
+        description: Target not found
+      '500':
+        description: Internal server error
+
+/references/{id}:
+  get:
+    tags:
+      - References
+    summary: Get a reference by ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Reference retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/ReferenceWithRelations'
+                success:
+                  type: boolean
+                message:
+                  type: string
+                status:
+                  type: integer
+      '404':
+        description: Reference not found
+      '500':
+        description: Internal server error
+
+  patch:
+    tags:
+      - References
+    summary: Update a reference
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateReference'
+    responses:
+      '200':
+        description: Reference updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: integer
+                success:
+                  type: boolean
+                message:
+                  type: string
+                status:
+                  type: integer
+      '400':
+        description: Validation error
+      '401':
+        description: Unauthorized
+      '404':
+        description: Reference not found
+      '500':
+        description: Internal server error
+
+  delete:
+    tags:
+      - References
+    summary: Delete a reference (soft delete)
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Reference deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: integer
+                success:
+                  type: boolean
+                message:
+                  type: string
+                status:
+                  type: integer
+      '401':
+        description: Unauthorized
+      '404':
+        description: Reference not found
+      '500':
+        description: Internal server error

@@ -14,6 +14,7 @@ import { Specialty, SpecialtyModel } from './Specialty';
 import { DomainPreference, DomainPreferenceModel } from './DomainPreference';
 import { Law, LawModel } from './Law';
 import { Article, ArticleModel } from './Article';
+import { Reference, ReferenceModel } from './Reference';
 
 interface Models {
   Role: typeof Role;
@@ -31,6 +32,7 @@ interface Models {
   DomainPreference: typeof DomainPreference;
   Law: typeof Law;
   Article: typeof Article;
+  Reference: typeof Reference;
 }
 
 export const AllModels = (sequelize: Sequelize): Models => ({
@@ -49,4 +51,5 @@ export const AllModels = (sequelize: Sequelize): Models => ({
   DomainPreference: DomainPreferenceModel(sequelize),
   Law: LawModel(sequelize),
   Article: ArticleModel(sequelize),
+  Reference: ReferenceModel(sequelize),
 });

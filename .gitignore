@@ -9,3 +9,4 @@ logs/
 __test__
 uploads/
 .history
+src/api/v1/database/migrations/disabled/

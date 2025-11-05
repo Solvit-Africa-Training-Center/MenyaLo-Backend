@@ -1,0 +1,188 @@
+components:
+  schemas:
+    Reference:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        lawId:
+          type: string
+          format: uuid
+        articleId:
+          type: string
+          format: uuid
+          nullable: true
+        parentReferenceId:
+          type: string
+          format: uuid
+          nullable: true
+        userId:
+          type: string
+          format: uuid
+          nullable: true
+        type:
+          type: string
+          enum: ['Law', 'Article', 'Commentary']
+        title:
+          type: string
+          minLength: 3
+          maxLength: 500
+        citation:
+          type: string
+          maxLength: 500
+          nullable: true
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+          nullable: true
+        notes:
+          type: string
+          maxLength: 5000
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    LawInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        lawNumber:
+          type: string
+        title:
+          type: string
+
+    ArticleInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        articleNumber:
+          type: string
+        title:
+          type: string
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+
+    ReferenceWithRelations:
+      allOf:
+        - $ref: '#/components/schemas/Reference'
+        - type: object
+          properties:
+            law:
+              $ref: '#/components/schemas/LawInfo'
+            article:
+              $ref: '#/components/schemas/ArticleInfo'
+              nullable: true
+            user:
+              $ref: '#/components/schemas/UserInfo'
+              nullable: true
+            parentReference:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                type:
+                  type: string
+
+    CreateReference:
+      type: object
+      required:
+        - title
+      properties:
+        lawId:
+          type: string
+          format: uuid
+          description: Reference a law (provide this for law reference)
+        articleId:
+          type: string
+          format: uuid
+          description: Reference an article (provide this for article reference)
+        referenceId:
+          type: string
+          format: uuid
+          description: Reference another reference (provide this for commentary)
+        title:
+          type: string
+          minLength: 3
+          maxLength: 500
+        citation:
+          type: string
+          maxLength: 500
+          nullable: true
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+          nullable: true
+        notes:
+          type: string
+          maxLength: 5000
+          nullable: true
+
+    UpdateReference:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 500
+        citation:
+          type: string
+          maxLength: 500
+          nullable: true
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+          nullable: true
+        notes:
+          type: string
+          maxLength: 5000
+          nullable: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        data:
+          oneOf:
+            - type: null
+            - type: object
+              properties:
+                message:
+                  type: string
+                stack:
+                  type: string
+        success:
+          type: boolean
+        message:
+          type: string
+        status:
+          type: integer
